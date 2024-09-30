@@ -19,11 +19,20 @@ class JBreeze
 
         try {
             if (is_file($data)) {
+
                 $this->jsonFilePath = $data;
                 $jsonContent = file_get_contents($data);
                 $this->data = json_decode($jsonContent, true);
+
+            }else if(@get_headers($data)){
+
+                $jsonContent = file_get_contents($data);
+                $this->data = json_decode($jsonContent, true);
+
             } else {
+                
                 $this->data = json_decode($data, true);
+
             }
 
             if (!is_array($this->data)) {
@@ -59,6 +68,9 @@ class JBreeze
 
     public function find($key, $value)
     {
+        if (empty($this->data)) {
+            return $this; 
+        }
 
         try {
             $found = false;
