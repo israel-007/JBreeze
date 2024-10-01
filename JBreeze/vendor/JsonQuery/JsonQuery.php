@@ -13,7 +13,6 @@ class JBreeze
 
     protected $exceptions = [];
 
-
     public function data($data)
     {
 
