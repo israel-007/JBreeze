@@ -228,6 +228,3 @@ class JBreeze
 
 
 
-
-$JBreeze = new JBreeze();
-
