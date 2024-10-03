@@ -1,10 +1,13 @@
-<?php
+<?php 
 
-require('JBreeze/autoload.php');
+require_once 'vendor/autoload.php';
 
-$jb = new JBreeze();
+use json\jbreeze;
 
-echo $jb->data('data.json')
-        ->select(['id'])
-        ->run();
+$jbreeze = new JBreeze();
 
+$result = $jbreeze->data('data.json')
+                    ->limit(3)
+                    ->run();
+
+echo json_encode($result);

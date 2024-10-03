@@ -1,0 +1,14 @@
+{
+    "JSON|INVALID": "Invalid JSON data provided.",
+    "KEY|NOTFOUND": "The specified key was not found in the dataset.",
+    "KEY|INVALID": "The provided key is invalid. It must pass validation.",
+    "KEY|INVALIDVALUE": "Invalid value for the key. Expected an integer value.",
+    "INSERT|EXTRAKEY": "Attempted to insert a record with an extra key not allowed in the dataset.",
+    "DATA|EMPTY": "The dataset is empty or no matching records were found.",
+    "BETWEEN|INVALIDRANGE": "Invalid range provided in the between() method. Exactly two values are required.",
+    "BETWEEN|INVALIDKEY": "The specified key in the between() method was not found in the dataset.",
+    "BETWEEN|NOTFOUND": "No records were found for the specified range in the between() method.",
+    "ORDER|NODATA": "No data available to order using the order() method.",
+    "ORDER|INVALIDCOLUMN": "The specified column for sorting does not exist in the dataset.",
+    "FILE|SAVEERROR": "An error occurred while trying to save the file. Check file permissions or file system issues."
+}

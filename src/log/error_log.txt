@@ -1,0 +1,18 @@
+[2024-09-29 21:54:08] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-09-29 21:56:20] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-09-29 22:02:32] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-09-29 22:02:32] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
+[2024-09-29 22:02:52] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-09-29 22:02:52] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
+[2024-10-02 17:34:27] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-02 17:34:27] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
+[2024-10-02 17:34:41] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-02 17:34:41] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
+[2024-10-02 17:34:45] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-02 17:34:45] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
+[2024-10-02 17:34:47] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-02 17:34:47] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
+[2024-10-02 17:34:48] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-02 17:34:48] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
+[2024-10-02 17:35:19] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
+[2024-10-02 17:35:19] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
