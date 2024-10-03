@@ -16,3 +16,4 @@
 [2024-10-02 17:34:48] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
 [2024-10-02 17:35:19] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
 [2024-10-02 17:35:19] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
+[2024-10-03 22:10:38] Shortcode: JSON|INVALID | Message: Invalid JSON data provided.

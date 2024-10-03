@@ -7,7 +7,7 @@ use json\jbreeze;
 $jbreeze = new JBreeze();
 
 $result = $jbreeze->data('data.json')
-                    ->limit(3)
+                    ->limit(2)
                     ->run();
 
-echo json_encode($result);
+echo $result;
