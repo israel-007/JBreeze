@@ -1,19 +1,35 @@
-[2024-09-29 21:54:08] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
-[2024-09-29 21:56:20] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
-[2024-09-29 22:02:32] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
-[2024-09-29 22:02:32] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
-[2024-09-29 22:02:52] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
-[2024-09-29 22:02:52] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
-[2024-10-02 17:34:27] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
-[2024-10-02 17:34:27] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
-[2024-10-02 17:34:41] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
-[2024-10-02 17:34:41] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
-[2024-10-02 17:34:45] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
-[2024-10-02 17:34:45] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
-[2024-10-02 17:34:47] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
-[2024-10-02 17:34:47] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
-[2024-10-02 17:34:48] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
-[2024-10-02 17:34:48] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
-[2024-10-02 17:35:19] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
-[2024-10-02 17:35:19] Shortcode: BETWEEN|INVALIDRANGE | Message: Invalid range provided in the between() method. Exactly two values are required.
-[2024-10-03 22:10:38] Shortcode: JSON|INVALID | Message: Invalid JSON data provided.
+[2024-10-03 22:44:43] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:48:09] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:48:26] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:48:50] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:49:01] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:49:13] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:49:20] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:49:21] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:49:41] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:49:43] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:50:16] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:50:29] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:51:02] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:51:58] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:54:17] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:56:12] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:56:29] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:57:08] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-03 22:57:10] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:30:04] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:30:50] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:31:39] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:32:29] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:34:09] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:34:26] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:34:42] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:35:31] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:35:42] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:35:48] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:36:13] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:36:31] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:37:08] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:37:10] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:37:17] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 15:37:35] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.

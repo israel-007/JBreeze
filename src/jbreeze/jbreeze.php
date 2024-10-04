@@ -363,6 +363,7 @@ class jbreeze
     // Run the query, execute insert/update/delete if needed, return result in format or true/false for operations
     public function run($returnType = 'json')
     {
+        $this->config['returnType'] = $returnType;
 
         $errorHandler = new ErrorHandler($this->config);
 
@@ -434,10 +435,6 @@ class jbreeze
             switch ($returnType) {
                 case 'array':
                     return $response;  // Return response as an array
-
-                case 'raw':
-                    // Return raw unfiltered data in 'result', keeping other response fields
-                    return $responseRaw;
 
                 case 'json':
                 default:

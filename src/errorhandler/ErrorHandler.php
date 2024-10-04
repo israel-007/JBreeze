@@ -8,6 +8,7 @@ class ErrorHandler
     private $logFile;
     private $displayErrors;
     private $environment;
+    private $returnType;
 
     /**
      * Constructor to initialize the error handler with a configuration array.
@@ -20,7 +21,8 @@ class ErrorHandler
         // Set configurations with defaults
         $this->logFile = $config['log_file'] ?? __DIR__ . '/../log/error_log.txt';
         $this->displayErrors = $config['display_errors'] ?? false;
-        $this->environment = $config['environment'] ?? 'production'; // Default to production
+        $this->environment = $config['environment'] ?? 'production';
+        $this->returnType = $config['returnType'];
     }
 
     /**
@@ -71,7 +73,7 @@ class ErrorHandler
         ];
 
         // Send the response as JSON
-        $this->sendJsonResponse($response, $error);
+        return $this->sendJsonResponse($response, $error);
     }
 
     /**
@@ -106,19 +108,35 @@ class ErrorHandler
      */
     private function sendJsonResponse($jsonResponse, $code)
     {
-        header('Content-Type: application/json');
+        // header('Content-Type: application/json');
 
         // Optionally display errors in non-production environments
         if ($this->displayErrors || $this->environment !== 'production') {
+
             echo json_encode($jsonResponse, JSON_PRETTY_PRINT);
+
         } else {
+
             // In production, we can hide detailed errors
-            echo json_encode([
+            $responseTemplate =
+            [
                 'status' => 'error',
                 'code' => $code,
                 'message' => 'An error occurred. Please contact support.',
-                'timestamp' => date('c'),
-            ]);
+                'timestamp' => date('c')
+            ];
+
+            switch ($this->returnType) {
+                case 'array':
+                    return $responseTemplate;  // Return response as an array
+
+                case 'json':
+                default:
+                    // Convert the response to JSON
+                    return json_encode($responseTemplate, JSON_PRETTY_PRINT);
+            }
+
+            
         }
     }
 

@@ -10,4 +10,3 @@ $result = $jbreeze->data('data.json')
                     ->limit(2)
                     ->run();
 
-echo $result;
