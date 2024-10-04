@@ -4,16 +4,14 @@ namespace jbreezeExceptions;
 
 class ErrorHandler
 {
-    private $errorMessages = [];
-    private $logFile;
-    private $displayErrors;
-    private $environment;
-    private $returnType;
+    private $errorMessages = []; // Log each error message
+    private $logFile; // Hold the log file name and path
+    private $displayErrors; // Decide either to display the error or not
+    private $environment; // Hold envirnment. Either production or development
+    private $returnType; // Define what the response should return. Either array or json
 
-    /**
-     * Constructor to initialize the error handler with a configuration array.
-     * @param array $config Configuration options (log_file, display_errors, environment).
-     */
+   
+    //  Constructor to initialize the error handler with a configuration array.
     public function __construct($config = [])
     {
         // Load external error messages from JSON file
@@ -25,11 +23,7 @@ class ErrorHandler
         $this->returnType = $config['returnType'];
     }
 
-    /**
-     * Load error messages from an external JSON file.
-     * @param string $filePath Path to the error messages JSON file.
-     * @return array Array of error messages.
-     */
+    // Load error messages from an external JSON file.
     private function loadErrorMessages($filePath)
     {
         if (file_exists($filePath)) {
@@ -39,10 +33,7 @@ class ErrorHandler
         return [];
     }
 
-    /**
-     * Handles error(s) passed in as a string or array.
-     * @param string|array $errors The error(s) to handle.
-     */
+    // Handles error(s) passed in as a string or array.
     public function handle($errors)
     {
         // Convert to array if a single error is passed
@@ -64,36 +55,25 @@ class ErrorHandler
                 'message' => $message
             ];
         }
-
-        // Include metadata (status, timestamp)
+        
         $response = [
             'status' => 'error',
             'errors' => $jsonResponse,
-            'timestamp' => date('c'), // ISO 8601 timestamp
+            'timestamp' => date('c'),
         ];
-
-        // Send the response as JSON
-        return $this->sendJsonResponse($response, $error);
+        
+        return $this->sendResponse($response, $error);
     }
 
-    /**
-     * Maps the error shortcode to a detailed human-readable message.
-     * @param string $error The error shortcode.
-     * @return string The human-readable error message.
-     */
+    // Maps the error shortcode to a detailed human-readable message.
     private function mapErrorMessage($error)
     {
-        // Return the mapped error message or a default message if not found
         return isset($this->errorMessages[$error])
             ? $this->errorMessages[$error]
             : "Unknown error: $error";
     }
 
-    /**
-     * Logs the error to the error log file, including the shortcode and message.
-     * @param string $shortcode The error shortcode.
-     * @param string $message The error message.
-     */
+    // Logs the error to the error log file, including the shortcode and message.
     private function logError($shortcode, $message)
     {
         if ($this->environment === 'production') {
@@ -102,22 +82,23 @@ class ErrorHandler
         }
     }
 
-    /**
-     * Sends the error messages as a JSON response.
-     * @param array $jsonResponse The structured JSON response with metadata.
-     */
-    private function sendJsonResponse($jsonResponse, $code)
+    // Sends the error messages.
+    private function sendResponse($Response, $code)
     {
-        // header('Content-Type: application/json');
-
         // Optionally display errors in non-production environments
         if ($this->displayErrors || $this->environment !== 'production') {
 
-            echo json_encode($jsonResponse, JSON_PRETTY_PRINT);
+            switch ($this->returnType) {
+                case 'array':
+                    return $Response;  // Return response as an array
+
+                case 'json':
+                default:
+                    return json_encode($Response, JSON_PRETTY_PRINT); // Convert the response to JSON
+            }
 
         } else {
 
-            // In production, we can hide detailed errors
             $responseTemplate =
             [
                 'status' => 'error',
@@ -132,11 +113,9 @@ class ErrorHandler
 
                 case 'json':
                 default:
-                    // Convert the response to JSON
-                    return json_encode($responseTemplate, JSON_PRETTY_PRINT);
+                    return json_encode($responseTemplate, JSON_PRETTY_PRINT); // Convert the response to JSON
             }
 
-            
         }
     }
 
@@ -147,7 +126,7 @@ class ErrorHandler
             return [];
         }
 
-        // Read the entire contents of the log file
+        // Read the contents of the log file
         $logContents = file($this->logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
         // Split each log line into an array
