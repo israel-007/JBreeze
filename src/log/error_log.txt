@@ -1,0 +1,5 @@
+[2024-10-04 17:46:24] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 17:46:49] Shortcode: KEY|NOTFOUND | Message: The specified key was not found in the dataset.
+[2024-10-04 17:47:47] Shortcode: KEY|NOTFOUsND | Message: Unknown error: KEY|NOTFOUsND
+[2024-10-04 17:50:13] Shortcode: QUERY|NODATAFOUND | Message: No data found
+[2024-10-04 18:27:07] Shortcode: QUERY|NODATAFOUND | Message: No data found

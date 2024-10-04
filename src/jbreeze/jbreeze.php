@@ -22,13 +22,24 @@ class jbreeze
 
     protected $config = []; // This configuration is sent to ErrorHandler
 
-    public function __construct($config = [])
+    /**
+     * Constructor to initialize configuration.
+     * 
+     * @param array $config Configuration options for the class.
+     */
+    public function __construct(array $config = [])
     {
         $this->config = $config;
     }
 
-    // Method to load data from a file path or raw JSON string
-    public function data($input)
+    /**
+     * Loads data from a file or raw JSON string.
+     * 
+     * @param string $input JSON string or path to a file.
+     * @return self
+     * @throws Exception If the input is invalid or JSON decoding fails.
+     */
+    public function data(string $input)
     {
         try {
             if (is_file($input)) {
@@ -59,7 +70,14 @@ class jbreeze
         return $this; // Enable chaining
     }
 
-    // Chainable where clause
+    /**
+     * Filters the data based on the given parameters.
+     * Supports dot notation for nested values.
+     * 
+     * @param array $parameters Key-value conditions to filter data.
+     * @return self
+     * @throws Exception If no matching data is found.
+     */
     public function where(array $parameters)
     {
         try {
@@ -131,7 +149,7 @@ class jbreeze
             });
 
             if (empty($this->filteredData)) {
-                throw new Exception("KEY|NOTFOUND");
+                throw new Exception("QUERY|NODATAFOUND");
             }
 
         } catch (Exception $e) {
@@ -141,8 +159,15 @@ class jbreeze
         return $this; // Enable chaining
     }
 
-    // Chainable order clause
-    public function order($column, $direction = 'DESC')
+    /**
+     * Orders the filtered data by a specified column and direction.
+     * 
+     * @param string $column The column to sort by.
+     * @param string $direction Sort direction ('ASC' or 'DESC'). Default is 'DESC'.
+     * @return self
+     * @throws Exception If the column doesn't exist or if data is missing.
+     */
+    public function order(string $column, string $direction = 'DESC')
     {
         try {
             // Check if data exists
@@ -172,8 +197,15 @@ class jbreeze
         return $this; // Enable chaining
     }
 
-    // Chaninable between clause
-    public function between($key, $range = [])
+    /**
+     * Filters data where a specific key's value falls within the given range.
+     * 
+     * @param string $key The key to apply the range filter to.
+     * @param array $range An array containing two values (start and end).
+     * @return self
+     * @throws Exception If the range is invalid or the key is not found.
+     */
+    public function between(string $key, array $range = [])
     {
         try {
             // Ensure that the range contains exactly two values
@@ -204,7 +236,13 @@ class jbreeze
         return $this; // Enable chaining
     }
 
-    // Optional select clause
+    /**
+     * Selects specific keys from the filtered data.
+     * 
+     * @param array $keys An array of keys to include in the result.
+     * @return self
+     * @throws Exception If any key is not found in the data.
+     */
     public function select(array $keys = [])
     {
         try {
@@ -227,7 +265,14 @@ class jbreeze
         return $this; // Enable chaining
     }
 
-    protected function getValueByDotNotation($item, $key)
+    /**
+     * Retrieves a value from a nested array using dot notation.
+     * 
+     * @param array $item The data array to search.
+     * @param string $key The dot-notated key to retrieve the value.
+     * @return mixed The value at the specified key, or null if not found.
+     */
+    protected function getValueByDotNotation(array $item, string $key)
     {
         $keys = explode('.', $key);  // Split the key by dots (e.g., "town.town3" becomes ["town", "town3"])
 
@@ -242,7 +287,14 @@ class jbreeze
         return $item;  // Return the final value
     }
 
-    protected function orderKeysAlphabetically($data)
+    /**
+     * Orders the keys of a dataset alphabetically.
+     * Moves the 'id' key to the front if it exists.
+     * 
+     * @param array $data The dataset to be ordered.
+     * @return array The dataset with keys ordered alphabetically.
+     */
+    protected function orderKeysAlphabetically(array $data)
     {
         // If $data is an array of records (multidimensional), apply sorting to each record
         if (is_array($data) && isset($data[0]) && is_array($data[0])) {
@@ -265,8 +317,15 @@ class jbreeze
         return $data;
     }
 
-    // Find by a specific key and value (returns first match)
-    public function find($key, $value)
+    /**
+     * Finds and filters the dataset for a specific key-value pair.
+     * 
+     * @param string $key The key to search for.
+     * @param mixed $value The value to match.
+     * @return self
+     * @throws Exception If no matching data is found.
+     */
+    public function find(string $key, $value)
     {
         try {
             $found = false;
@@ -279,7 +338,7 @@ class jbreeze
             }
 
             if (!$found) {
-                throw new Exception("KEY|NOTFOUND");
+                throw new Exception("QUERY|NODATAFOUND");
             }
 
         } catch (Exception $e) {
@@ -289,7 +348,13 @@ class jbreeze
         return $this; // Enable chaining
     }
 
-    // Mark data for update, actual update will be done in run()
+    /**
+     * Marks data for update with new values.
+     * Actual update happens when run() is called.
+     * 
+     * @param array $newValues The new values to update.
+     * @return self
+     */
     public function update(array $newValues)
     {
         $this->isUpdate = true;
@@ -297,8 +362,15 @@ class jbreeze
         return $this; // Enable chaining
     }
 
-    // Mark data for insertion, actual insert will be done in run()
-    public function insert(array $newValues, $primaryKey = null)
+    /**
+     * Marks data for insertion with new values.
+     * 
+     * @param array $newValues The new record values.
+     * @param string|null $primaryKey The primary key field to auto-increment (optional).
+     * @return self
+     * @throws Exception If the insert operation fails (e.g., invalid keys).
+     */
+    public function insert(array $newValues, ?string $primaryKey = null)
     {
         try {
             $this->isInsert = true;
@@ -342,15 +414,25 @@ class jbreeze
         }
     }
 
-    // Mark data for deletion, actual deletion will be done in run()
+    /**
+     * Marks the filtered data for deletion.
+     * Actual deletion happens when run() is called.
+     * 
+     * @return self
+     */
     public function delete()
     {
         $this->isDelete = true;
         return $this; // Enable chaining
     }
 
-    // Limit the number of results
-    public function limit($count)
+    /**
+     * Limits the number of results returned from the filtered data.
+     * 
+     * @param int $count The number of results to return.
+     * @return self
+     */
+    public function limit(int $count)
     {
         try {
             $this->filteredData = array_slice($this->filteredData, 0, $count);
@@ -360,29 +442,31 @@ class jbreeze
         return $this; // Enable chaining
     }
 
-    // Run the query, execute insert/update/delete if needed, return result in format or true/false for operations
-    public function run($returnType = 'json')
+    /**
+     * Executes the query and performs any pending insert, update, or delete operations.
+     * Returns the filtered dataset in the specified format.
+     * 
+     * @param string $returnType The format of the return data ('json' or 'array'). Default is 'json'.
+     * @return mixed The filtered dataset in the specified format.
+     * @throws Exception If an error occurs during execution.
+     */
+    public function run(string $returnType = 'json')
     {
         $this->config['returnType'] = $returnType;
-
         $errorHandler = new ErrorHandler($this->config);
 
         try {
-            // Check if there are any logged exceptions
             if (!empty($this->exceptions)) {
-                // Call ErrorHandler and send all exceptions
-
-                return $errorHandler->handle($this->exceptions); // Stop execution, return null to prevent further processing
+                // Return an error response using ErrorHandler
+                return $errorHandler->handle($this->exceptions);
             }
 
-            // Handle insert logic
             if ($this->isInsert) {
-                $this->data[] = $this->newValues; // Add new data to the dataset
+                $this->data[] = $this->newValues;
                 $this->resetFlags();
-                return $this->finalize(); // Save to file or return updated data
+                return $this->finalize();
             }
 
-            // Handle update logic
             if ($this->isUpdate) {
                 if (empty($this->filteredData)) {
                     throw new Exception("UPDATE|NOTFOUND");
@@ -391,15 +475,14 @@ class jbreeze
                 foreach ($this->data as &$item) {
                     foreach ($this->filteredData as $filteredItem) {
                         if ($item == $filteredItem) {
-                            $item = array_merge($item, $this->newValues); // Perform the update
+                            $item = array_merge($item, $this->newValues);
                         }
                     }
                 }
                 $this->resetFlags();
-                return $this->finalize(); // Save to file or return updated data
+                return $this->finalize();
             }
 
-            // Handle delete logic
             if ($this->isDelete) {
                 if (empty($this->filteredData)) {
                     throw new Exception("DELETE|NOTFOUND");
@@ -412,45 +495,36 @@ class jbreeze
                 $newCount = count($this->data);
 
                 $this->resetFlags();
-                return $this->finalize($newCount < $originalCount); // Save to file or return true/false if deleted
+                return $this->finalize($newCount < $originalCount);
             }
 
-            // If no insert/update/delete, just return the filtered results
+            // Ensure filtered data is not empty before returning results
+            if (empty($this->filteredData)) {
+                throw new Exception("QUERY|NODATAFOUND");
+            }
 
-            // Prepare the response
             $response = [
                 'status' => 'success',
-                'result' => $this->filteredData,  // The filtered data
-                'timestamp' => date('c')          // ISO 8601 formatted timestamp
-            ];
-
-            $responseRaw = [
-                'status' => 'success',
-                'result' => $this->data,
+                'result' => $this->filteredData,
                 'timestamp' => date('c')
             ];
 
-
-            // Handle different return types
-            switch ($returnType) {
-                case 'array':
-                    return $response;  // Return response as an array
-
-                case 'json':
-                default:
-                    // Convert the response to JSON
-                    return json_encode($response, JSON_PRETTY_PRINT);
-            }
+            return $returnType === 'array' ? $response : json_encode($response, JSON_PRETTY_PRINT);
 
         } catch (Exception $e) {
-            $this->logException($e->getMessage()); // Log any last exception
-            // Handle all logged exceptions
-            return $errorHandler->handle($this->exceptions); // Stop execution, return null to prevent further processing
+            $this->logException($e->getMessage());
+            return $errorHandler->handle($this->exceptions);
         }
     }
 
-    // Save the updated dataset back to the JSON file if file path is provided, otherwise return data
-    protected function finalize($operationResult = true)
+
+    /**
+     * Finalizes the operation by saving the updated dataset to a file or returning the result.
+     * 
+     * @param bool $operationResult True if the operation (insert/update/delete) succeeded.
+     * @return mixed JSON encoded data or true/false based on file save success.
+     */
+    protected function finalize(bool $operationResult = true)
     {
         if ($this->jsonFilePath) {
             // Order keys alphabetically for all records before saving
@@ -460,8 +534,13 @@ class jbreeze
             return $operationResult ? json_encode($this->data, JSON_PRETTY_PRINT) : false;
         }
     }
-    
-    // Save the updated dataset to the JSON file
+
+    /**
+     * Saves the current dataset to a JSON file.
+     * 
+     * @return bool True on success, false on failure.
+     * @throws Exception If an error occurs during file saving.
+     */
     protected function saveToFile()
     {
         try {
@@ -477,8 +556,14 @@ class jbreeze
         return true;
     }
 
-    // Get the highest primary key
-    protected function getNextPrimaryKeyValue($primaryKey)
+    /**
+     * Retrieves the next available value for a primary key.
+     * 
+     * @param string $primaryKey The primary key field.
+     * @return int|false The next primary key value, or false if an error occurs.
+     * @throws Exception If the primary key value is invalid.
+     */
+    protected function getNextPrimaryKeyValue(string $primaryKey)
     {
         try {
             $maxValue = null;
@@ -503,8 +588,15 @@ class jbreeze
         }
     }
 
-    // Validate that the primary key exists and is an integer field
-    protected function validatePrimaryKey($primaryKey, array $existingKeys)
+    /**
+     * Validates that the primary key exists and has integer values in the dataset.
+     * 
+     * @param string $primaryKey The primary key field.
+     * @param array $existingKeys The existing keys in the dataset.
+     * @return bool True if the primary key is valid, false otherwise.
+     * @throws Exception If the primary key is invalid.
+     */
+    protected function validatePrimaryKey(string $primaryKey, array $existingKeys)
     {
         try {
             // Check if the primary key exists in the dataset keys
@@ -526,7 +618,14 @@ class jbreeze
         }
     }
 
-    // Validate that new record keys match the existing dataset
+    /**
+     * Validates that new record keys match the existing dataset keys.
+     * Automatically adds missing keys with null values.
+     * 
+     * @param array $newValues The new record values.
+     * @param array $existingKeys The keys from the existing dataset.
+     * @throws Exception If extra keys are found in the new record.
+     */
     protected function validateNewRecordKeys(array $newValues, array $existingKeys)
     {
         try {
@@ -555,7 +654,11 @@ class jbreeze
         }
     }
 
-    // Reset the flags and filtered data
+    /**
+     * Resets all flags and the filtered data after an operation.
+     * 
+     * @return void
+     */
     protected function resetFlags()
     {
         $this->isUpdate = false;
@@ -567,18 +670,32 @@ class jbreeze
         $this->exceptions = []; // Reset exceptions after handling them
     }
 
-    // Count the results
+    /**
+     * Returns the count of filtered results.
+     * 
+     * @return int The number of filtered records.
+     */
     public function count()
     {
         return count($this->filteredData);
     }
 
-    // Log exceptions
-    protected function logException($message)
+    /**
+     * Logs an exception message to the internal exceptions array.
+     * 
+     * @param string $message The exception message.
+     * @return void
+     */
+    protected function logException(string $message)
     {
         $this->exceptions[] = $message; // Add the exception to the list
     }
 
+    /**
+     * Retrieves the error log from the ErrorHandler.
+     * 
+     * @return array The array of logged errors.
+     */
     public static function errorslog(){
 
         $errorHandler = new ErrorHandler();
