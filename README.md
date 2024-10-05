@@ -6,6 +6,7 @@
 
 The library is equipped with robust error handling, supports complex filtering with dot notation (for nested JSON keys), and allows you to structure your data by automatically ordering keys. Whether you're working with large datasets or performing simple operations, jbreeze makes it easy to interact with JSON in an elegant and efficient way.
 
+
 ## Key Features:
 
 * Chainable API for fluent interaction with JSON data
@@ -18,6 +19,8 @@ The library is equipped with robust error handling, supports complex filtering w
 * Lightweight and simple to integrate into any PHP project
 * jbreeze is designed to bring the convenience of SQL-like operations to your JSON data, making it easier to manage complex datasets without the need for a full database system.
 
+#
+
 ## Table of Contents
 
 1. [Installation](#installation)
@@ -27,6 +30,8 @@ The library is equipped with robust error handling, supports complex filtering w
 5. [Examples](#examples)
 6. [Contributing](#contributing)
 7. [License](#license)
+
+#
 
 ## Installation
 
@@ -51,6 +56,8 @@ The library follows PSR-4 autoloading standards, which Composer handles automati
 ```
 
 The Jbreeze library will be ready to use within your project.
+
+#
 
 ## Getting Started
 After installing jbreeze, you can start using it to load, query, and manipulate JSON data. This section will walk you through the basic usage of the library.
@@ -125,6 +132,8 @@ $jbreeze->where(['id' => 1])->update(['name' => 'Johnathan Doe'])->run();
 $jbreeze->where(['id' => 2])->delete()->run();
 
 ```
+
+#
 
 ## Available Methods
 
@@ -293,7 +302,6 @@ print_r($result);
 ```
 
 #
-#
 
 ## Primary Key
 
@@ -333,6 +341,8 @@ Find the highest existing value for the 'id' field in the dataset, automatically
 > Important Notes:
 > * Primary Key is Optional: The second parameter, `$primaryKey`, is completely optional. If you do not pass it, no auto-incrementing will occur, and the record will be inserted as you provide it.
 > * Primary Key Validation: If a primary key is provided, jbreeze will validate that the key exists in the dataset and that its values are integers. If this is not the case, an error will be thrown.
+
+#
 
 ## Dot Notation
 
@@ -425,6 +435,8 @@ $sortedData = $jbreeze->order('address.zip', 'ASC')->run();
 ```
 This will sort the records based on the zip code inside the address object.
 
+
+#
 
 ## Responses
 
@@ -563,6 +575,8 @@ If there is an issue when saving to a JSON file (e.g., file permissions), you mi
 
 ```
 
+#
+
 ## Error Codes
 
 The library provides a structured error-handling system using predefined error codes. These error codes help you quickly identify what went wrong during the execution of your queries or modifications. Each error code is associated with a specific issue, allowing for easier debugging and error tracking.
@@ -593,6 +607,8 @@ When an error occurs, the response will include:
 }
 
 ```
+
+#
 
 ## Examples
 Let’s use the following deeply nested JSON structure for all examples:
@@ -801,6 +817,8 @@ echo $selectedData;
 ]
 
 ```
+
+#
 
 ## Contributing
 Contributions are welcomed to the jbreeze library! Whether you're fixing bugs, adding new features, improving documentation, or suggesting enhancements, your contributions are valuable.
