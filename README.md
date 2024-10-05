@@ -42,7 +42,7 @@ Run the following command in your terminal to install jbreeze into your project:
 
 ```bash
 
-composer require json/jbreeze
+composer require jbreeze/jbreeze
 
 ```
 
@@ -70,7 +70,7 @@ To begin, you need to load JSON data from a file or a raw JSON string using the 
 
 require 'vendor/autoload.php';
 
-use Json\jbreeze;
+use jbreeze\jbreeze;
 
 $jbreeze = new jbreeze();
 $jbreeze->data('path/to/your/file.json');
@@ -82,7 +82,7 @@ $jbreeze->data('path/to/your/file.json');
 
 require 'vendor/autoload.php';
 
-use Json\jbreeze;
+use jbreeze\jbreeze;
 
 $jsonString = '[{"id": 1, "name": "John Doe"}, {"id": 2, "name": "Jane Smith"}]';
 $jbreeze = new jbreeze();
@@ -660,7 +660,7 @@ Let’s filter the records based on the `area` inside the nested `address.zip` s
 
 require 'vendor/autoload.php';
 
-use Json\jbreeze;
+use jbreeze\jbreeze;
 
 $jsonString = '[{
     "id": 1, "name": "John Doe", "address": {"city": "New York", "zip": {"code": 10001, "area": "Queens"}}
@@ -708,7 +708,7 @@ Let’s update the `city` for all records where the `zip.code` is `10002`. We wi
 
 require 'vendor/autoload.php';
 
-use Json\jbreeze;
+use jbreeze\jbreeze;
     
 $jsonString = '[{
     "id": 1, "name": "John Doe", "address": {"city": "New York", "zip": {"code": 10001, "area": "Queens"}}
@@ -777,7 +777,7 @@ In this example, we’ll select only the `name` and the `code` field inside `add
 
 require 'vendor/autoload.php';
 
-use Json\jbreeze;
+use jbreeze\jbreeze;
 
 $jsonString = '[{
     "id": 1, "name": "John Doe", "address": {"city": "New York", "zip": {"code": 10001, "area": "Queens"}}
