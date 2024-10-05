@@ -16,7 +16,7 @@ The library is equipped with robust error handling, supports complex filtering w
 * Ability to handle both file-based and raw JSON string inputs
 * Supports nested key access using dot notation
 * Lightweight and simple to integrate into any PHP project
-* jbreeze is designed to bring the convenience of SQL-like operations to your JSON data, making it easier to manage complex datasets without the * need for a full database system.
+* jbreeze is designed to bring the convenience of SQL-like operations to your JSON data, making it easier to manage complex datasets without the need for a full database system.
 
 ## Table of Contents
 
@@ -46,7 +46,7 @@ The library follows PSR-4 autoloading standards, which Composer handles automati
 
 ```php
 
-    require 'vendor/autoload.php';
+ require 'vendor/autoload.php';
 
 ```
 
@@ -70,59 +70,59 @@ To begin, you need to load JSON data from a file or a raw JSON string using the 
 
 ```
 
-Example: Loading Data from a Raw JSON String
+> Example: Loading Data from a Raw JSON String
 ```php
 
-    require 'vendor/autoload.php';
+require 'vendor/autoload.php';
 
-    use Json\jbreeze;
+use Json\jbreeze;
 
-    $jsonString = '[{"id": 1, "name": "John Doe"}, {"id": 2, "name": "Jane Smith"}]';
-    $jbreeze = new jbreeze();
-    $jbreeze->data($jsonString);
+$jsonString = '[{"id": 1, "name": "John Doe"}, {"id": 2, "name": "Jane Smith"}]';
+$jbreeze = new jbreeze();
+$jbreeze->data($jsonString);
 
 ```
 ### Querying Data
 Once the data is loaded, you can start filtering and querying it using methods like `where()`, `order()`, and `limit()`.
 
-Example: Filtering Data with `where()`
+> Example: Filtering Data with `where()`
 ```php
 
-    $filteredData = $jbreeze->where(['name' => 'John Doe'])->run();
-    print_r($filteredData);
+$filteredData = $jbreeze->where(['name' => 'John Doe'])->run();
+print_r($filteredData);
 
 ```
 
-Example: Sorting Data with `order()`
+> Example: Sorting Data with `order()`
 ```php
 
-    $sortedData = $jbreeze->order('name', 'ASC')->run();
-    print_r($sortedData);
+$sortedData = $jbreeze->order('name', 'ASC')->run();
+print_r($sortedData);
 
 ```
 
 ### Modifying Data
 In addition to querying, you can insert, update, and delete records in the JSON data.
 
-Example: Inserting Data
+> Example: Inserting Data
 ```php
 
-    $newRecord = ['name' => 'Alice Cooper', 'age' => 30];
-    $jbreeze->insert($newRecord, 'id')->run();
+$newRecord = ['name' => 'Alice Cooper', 'age' => 30];
+$jbreeze->insert($newRecord, 'id')->run();
 
 ```
 
-Example: Updating Data
+> Example: Updating Data
 ```php
 
-    $jbreeze->where(['id' => 1])->update(['name' => 'Johnathan Doe'])->run();
+$jbreeze->where(['id' => 1])->update(['name' => 'Johnathan Doe'])->run();
 
 ```
 
-Example: Deleting Data
+> Example: Deleting Data
 ```php
 
-    $jbreeze->where(['id' => 2])->delete()->run();
+$jbreeze->where(['id' => 2])->delete()->run();
 
 ```
 
@@ -130,154 +130,153 @@ Example: Deleting Data
 
 The jbreeze library provides various methods to manipulate and query JSON data. Each method is designed to be chainable, allowing for a fluent interface.
 
-`data()`
+> `data()`
 ```php
 
-    $jbreeze->data(string $input)
+$jbreeze->data(string $input)
 
 ```
 Loads JSON data from a file or raw JSON string.
 
-`select()`
+> `select()`
 ```php
 
-    $jbreeze->select(array $keys = [])
+$jbreeze->select(array $keys = [])
 
 ```
 Selects specific keys from the dataset, returning only those fields. `$keys:` An array of keys to select from the dataset.
 
-Example:
+> Example:
 ```php
 
-    $selectedData = $jbreeze->select(['name', 'age'])->run();
+$selectedData = $jbreeze->select(['name', 'age'])->run();
 
 ```
 
-`where()`
+> `where()`
 ```php
 
-    $jbreeze->where(array $conditions)
+$jbreeze->where(array $conditions)
 
 ```
 Filters the JSON data based on specified conditions. Supports comparison operators like `=`, `>`, `<`, `>=`, `<=`, `%` (for "like" searches), and `||` (for "or" conditions).
 
-Example:
+> Example:
 ```php
 
-    $filteredData = $jbreeze->where(['age' => '>25'])->run();
+$filteredData = $jbreeze->where(['age' => '>25'])->run();
 
 ```
 
-`order()`
+> `order()`
 ```php
 
-    $jbreeze->order(string $column, string $direction = 'DESC')
+$jbreeze->order(string $column, string $direction = 'DESC')
 
 ```
 Sorts the JSON data based on a specified column in ascending or descending order. `$column:` The column to sort by. `$direction:` Sort direction, either `'ASC'` or `'DESC'`.
 
-Example:
+> Example:
 ```php
 
-    $sortedData = $jbreeze->order('age', 'ASC')->run();
+$sortedData = $jbreeze->order('age', 'ASC')->run();
 
 ```
 
-`between()`
+> `between()`
 ```php
 
-    $jbreeze->between(string $key, array $range)
+$jbreeze->between(string $key, array $range)
 
 ```
 Filters data where the specified key's value falls between two values. `$key:` The key to check. `$range:` An array containing the lower and upper bounds.
 
-Example:
+> Example:
 ```php
 
-    $filteredData = $jbreeze->between('age', [20, 30])->run();
+$filteredData = $jbreeze->between('age', [20, 30])->run();
 
 ```
 
-`find()`
+> `find()`
 ```php
 
-    $jbreeze->find(string $key, mixed $value)
+$jbreeze->find(string $key, mixed $value)
 
 ```
 Finds the first record in the dataset where the specified key matches the value. `$key:` The key to search by. `$value:` The value to match.
 
-Example:
-
+> Example:
 ```php
 
-    $record = $jbreeze->find('id', 1)->run();
+$record = $jbreeze->find('id', 1)->run();
 
 ```
 
-`insert()`
+> `insert()`
 ```php
 
-    $jbreeze->insert(array $newValues, string|null $primaryKey = null)
+$jbreeze->insert(array $newValues, string|null $primaryKey = null)
 
 ```
 Inserts a new record into the dataset. `$newValues:` The associative array representing the new record. `$primaryKey:` The primary key field (optional). If provided, the library will auto-increment this key.
 
-Example:
+> Example:
 ```php
 
-    $jbreeze->insert(['name' => 'Alice Cooper', 'age' => 30], 'id')->run();
+$jbreeze->insert(['name' => 'Alice Cooper', 'age' => 30], 'id')->run();
 
 ```
 
-`update()`
+> `update()`
 ```php
 
-    $jbreeze->update(array $newValues)
+$jbreeze->update(array $newValues)
 
 ```
 Updates the existing data that matches the previously applied filters. `$newValues:` An associative array of key-value pairs representing the new values.
 
-Example:
+> Example:
 ```php
 
-    $jbreeze->where(['id' => 1])->update(['name' => 'Johnathan Doe'])->run();
+$jbreeze->where(['id' => 1])->update(['name' => 'Johnathan Doe'])->run();
 
 ```
 
-`delete()`
+> `delete()`
 ```php
 
-    $jbreeze->delete()
+$jbreeze->delete()
 
 ```
 Deletes records that match the previously applied filters.
 
-Example:
+> Example:
 ```php
 
-    $jbreeze->where(['id' => 2])->delete()->run();
+$jbreeze->where(['id' => 2])->delete()->run();
 
 ```
 
-`limit()`
+> `limit()`
 ```php
 
-    $jbreeze->limit(int $count)
+$jbreeze->limit(int $count)
 
 ```
 Limits the number of records returned from the filtered dataset. `$count:` The maximum number of records to return.
 
-Example:
+> Example:
 ```php
 
-    $limitedData = $jbreeze->limit(5)->run();
+$limitedData = $jbreeze->limit(5)->run();
 
 ```
 
-`run()`
+> `run()`
 ```php
 
-    $jbreeze->run(string $returnType = 'json')
+$jbreeze->run(string $returnType = 'json')
 
 ```
 
@@ -285,11 +284,11 @@ Executes the query and returns the result or performs insert, update, or delete 
 
 Returns: The filtered data in the specified format or success/failure for insert/update/delete.
 
-Example:
+> Example:
 ```php
 
-    $result = $jbreeze->where(['age' => '>25'])->run('array');
-    print_r($result);
+$result = $jbreeze->where(['age' => '>25'])->run('array');
+print_r($result);
 
 ```
 
@@ -301,7 +300,7 @@ Parameters:
 * $newValues: An associative array containing the new record's data.
 * $primaryKey: (optional) The primary key field in the dataset (e.g., `'id'`). If provided, the primary key value will be automatically incremented based on the highest existing value in the dataset.
 
-Example Without Primary Key
+> Example Without Primary Key
 If your dataset doesn't require an auto-incremented primary key, you can omit the second parameter:
 
 ```php
@@ -313,7 +312,7 @@ If your dataset doesn't require an auto-incremented primary key, you can omit th
 
 In this case, the record will be inserted as-is, without any automatic primary key generation.
 
-Example With Primary Key
+> Example With Primary Key
 If your dataset uses a primary key (like `'id'`), you can specify this key to auto-increment. The library will find the highest existing value for the key and increment it by 1.
 
 ```php
