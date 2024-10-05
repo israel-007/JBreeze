@@ -1,19 +1,19 @@
 <?php return array(
     'root' => array(
-        'name' => 'json/jbreeze',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'name' => 'jbreeze/jbreeze',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '055a361476dc26bbe5c76c4a1a4b87a0d300263e',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        'json/jbreeze' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+        'jbreeze/jbreeze' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '055a361476dc26bbe5c76c4a1a4b87a0d300263e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -6,6 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'json\\' => array($baseDir . '/src/jbreeze'),
+    'jbreeze\\' => array($baseDir . '/src/jbreeze'),
     'jbreezeExceptions\\' => array($baseDir . '/src/errorhandler'),
 );

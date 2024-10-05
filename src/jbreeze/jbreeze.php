@@ -1,6 +1,6 @@
 <?php
 
-namespace Json;
+namespace Jbreeze;
 
 use jbreezeExceptions\ErrorHandler;
 

@@ -2,7 +2,7 @@
 
 require_once 'vendor/autoload.php';
 
-use json\jbreeze;
+use jbreeze\jbreeze;
 
 $jbreeze = new JBreeze();
 

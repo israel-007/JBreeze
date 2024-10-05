@@ -9,13 +9,13 @@ class ComposerStaticInit60253d2fdb0895efce37eeb4ef50f535
     public static $prefixLengthsPsr4 = array (
         'j' => 
         array (
-            'json\\' => 5,
+            'jbreeze\\' => 8,
             'jbreezeExceptions\\' => 18,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'json\\' => 
+        'jbreeze\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/jbreeze',
         ),
