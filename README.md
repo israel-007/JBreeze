@@ -130,7 +130,7 @@ $jbreeze->where(['id' => 2])->delete()->run();
 
 The jbreeze library provides various methods to manipulate and query JSON data. Each method is designed to be chainable, allowing for a fluent interface.
 
-> `data()`
+### `data()`
 ```php
 
 $jbreeze->data(string $input)
@@ -138,7 +138,7 @@ $jbreeze->data(string $input)
 ```
 Loads JSON data from a file or raw JSON string.
 
-> `select()`
+### `select()`
 ```php
 
 $jbreeze->select(array $keys = [])
@@ -153,7 +153,7 @@ $selectedData = $jbreeze->select(['name', 'age'])->run();
 
 ```
 
-> `where()`
+### `where()`
 ```php
 
 $jbreeze->where(array $conditions)
@@ -168,7 +168,7 @@ $filteredData = $jbreeze->where(['age' => '>25'])->run();
 
 ```
 
-> `order()`
+### `order()`
 ```php
 
 $jbreeze->order(string $column, string $direction = 'DESC')
@@ -183,7 +183,7 @@ $sortedData = $jbreeze->order('age', 'ASC')->run();
 
 ```
 
-> `between()`
+### `between()`
 ```php
 
 $jbreeze->between(string $key, array $range)
@@ -198,7 +198,7 @@ $filteredData = $jbreeze->between('age', [20, 30])->run();
 
 ```
 
-> `find()`
+### `find()`
 ```php
 
 $jbreeze->find(string $key, mixed $value)
@@ -213,7 +213,7 @@ $record = $jbreeze->find('id', 1)->run();
 
 ```
 
-> `insert()`
+### `insert()`
 ```php
 
 $jbreeze->insert(array $newValues, string|null $primaryKey = null)
@@ -228,7 +228,7 @@ $jbreeze->insert(['name' => 'Alice Cooper', 'age' => 30], 'id')->run();
 
 ```
 
-> `update()`
+### `update()`
 ```php
 
 $jbreeze->update(array $newValues)
@@ -243,7 +243,7 @@ $jbreeze->where(['id' => 1])->update(['name' => 'Johnathan Doe'])->run();
 
 ```
 
-> `delete()`
+### `delete()`
 ```php
 
 $jbreeze->delete()
@@ -258,7 +258,7 @@ $jbreeze->where(['id' => 2])->delete()->run();
 
 ```
 
-> `limit()`
+### `limit()`
 ```php
 
 $jbreeze->limit(int $count)
@@ -273,7 +273,7 @@ $limitedData = $jbreeze->limit(5)->run();
 
 ```
 
-> `run()`
+### `run()`
 ```php
 
 $jbreeze->run(string $returnType = 'json')
