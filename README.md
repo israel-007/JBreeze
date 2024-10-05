@@ -292,6 +292,9 @@ print_r($result);
 
 ```
 
+#
+#
+
 ## Primary Key
 
 The `insert()` method allows you to add new records to the JSON dataset. You can specify a primary key to auto-increment, but this is optional.
@@ -328,7 +331,7 @@ Find the highest existing value for the 'id' field in the dataset, automatically
 
 > [!NOTE]
 > Important Notes:
-> * Primary Key is Optional: The second parameter, $primaryKey, is completely optional. If you do not pass it, no auto-incrementing will occur, and the record will be inserted as you provide it.
+> * Primary Key is Optional: The second parameter, `$primaryKey`, is completely optional. If you do not pass it, no auto-incrementing will occur, and the record will be inserted as you provide it.
 > * Primary Key Validation: If a primary key is provided, jbreeze will validate that the key exists in the dataset and that its values are integers. If this is not the case, an error will be thrown.
 
 ## Dot Notation
