@@ -61,12 +61,12 @@ To begin, you need to load JSON data from a file or a raw JSON string using the 
 > Example: Loading Data from a JSON File
 ```php
 
-    require 'vendor/autoload.php';
+require 'vendor/autoload.php';
 
-    use Json\jbreeze;
+use Json\jbreeze;
 
-    $jbreeze = new jbreeze();
-    $jbreeze->data('path/to/your/file.json');
+$jbreeze = new jbreeze();
+$jbreeze->data('path/to/your/file.json');
 
 ```
 
@@ -372,6 +372,7 @@ $jbreeze->data($jsonString)
     ->run();
 
 ```
+
 
 > Example: Using Dot Notation in Filtering
 ```php
