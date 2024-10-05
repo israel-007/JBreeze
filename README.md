@@ -317,8 +317,8 @@ If your dataset uses a primary key (like `'id'`), you can specify this key to au
 
 ```php
 
-    $newRecord = ['name' => 'Alice Cooper', 'age' => 30];
-    $jbreeze->insert($newRecord, 'id')->run();
+$newRecord = ['name' => 'Alice Cooper', 'age' => 30];
+$jbreeze->insert($newRecord, 'id')->run();
 
 ```
 
@@ -326,9 +326,10 @@ In this example, jbreeze will:
 
 Find the highest existing value for the 'id' field in the dataset, automatically assign the next value to the new record, and then insert the new record with this auto-generated ID.
 
-Important Notes:
-* Primary Key is Optional: The second parameter, $primaryKey, is completely optional. If you do not pass it, no auto-incrementing will occur, and the record will be inserted as you provide it.
-* Primary Key Validation: If a primary key is provided, jbreeze will validate that the key exists in the dataset and that its values are integers. If this is not the case, an error will be thrown.
+> [!NOTE]
+> Important Notes:
+> * Primary Key is Optional: The second parameter, $primaryKey, is completely optional. If you do not pass it, no auto-incrementing will occur, and the record will be inserted as you provide it.
+> * Primary Key Validation: If a primary key is provided, jbreeze will validate that the key exists in the dataset and that its values are integers. If this is not the case, an error will be thrown.
 
 ## Dot Notation
 
@@ -341,24 +342,24 @@ This is particularly useful when dealing with complex or multi-level JSON struct
 Suppose you have the following nested JSON data:
 ```json
 
-    [
-        {
-            "id": 1,
-            "name": "John Doe",
-            "address": {
-                "city": "New York",
-                "zip": 10001
-            }
-        },
-        {
-            "id": 2,
-            "name": "Jane Smith",
-            "address": {
-                "city": "Los Angeles",
-                "zip": 90001
-            }
+[
+    {
+        "id": 1,
+        "name": "John Doe",
+        "address": {
+            "city": "New York",
+            "zip": 10001
         }
-    ]
+    },
+    {
+        "id": 2,
+        "name": "Jane Smith",
+        "address": {
+            "city": "Los Angeles",
+            "zip": 90001
+        }
+    }
+]
 
 ```
 
@@ -366,16 +367,16 @@ Suppose you have the following nested JSON data:
 To filter or access nested keys like `city` or `zip` under the `address` field, you can use dot notation. For example, to filter all records where the city is "New York," you would write:
 ```php
 
-    $jbreeze->data($jsonString)
-        ->where(['address.city' => 'New York'])
-        ->run();
+$jbreeze->data($jsonString)
+    ->where(['address.city' => 'New York'])
+    ->run();
 
 ```
 
-Example: Using Dot Notation in Filtering
+> Example: Using Dot Notation in Filtering
 ```php
 
-    $filteredData = $jbreeze->where(['address.zip' => 10001])->run();
+$filteredData = $jbreeze->where(['address.zip' => 10001])->run();
 
 ```
 
@@ -388,23 +389,23 @@ Example: Using Dot Notation in a `select()` Query
 You can also use dot notation to select specific nested values:
 ```php
 
-    $selectedData = $jbreeze->select(['name', 'address.city'])->run();
+$selectedData = $jbreeze->select(['name', 'address.city'])->run();
 
 ```
 
-This will return:
+> This will return:
 ```json
 
-    [
-        {
-            "name": "John Doe",
-            "address.city": "New York"
-        },
-        {
-            "name": "Jane Smith",
-            "address.city": "Los Angeles"
-        }
-    ]
+[
+    {
+        "name": "John Doe",
+        "address.city": "New York"
+    },
+    {
+        "name": "Jane Smith",
+        "address.city": "Los Angeles"
+    }
+]
 
 ```
 
@@ -415,7 +416,7 @@ Example: Ordering by a Nested Key
 You can sort data by a nested field using dot notation:
 ```php
 
-    $sortedData = $jbreeze->order('address.zip', 'ASC')->run();
+$sortedData = $jbreeze->order('address.zip', 'ASC')->run();
 
 ```
 This will sort the records based on the zip code inside the address object.
@@ -435,33 +436,33 @@ JSON File Example
 
 ```php
 
-    $jbreeze->data('path/to/file.json')->where(['age' => '>25'])->run();
+$jbreeze->data('path/to/file.json')->where(['age' => '>25'])->run();
 
 ```
 
 Raw JSON String Example
 ```php
 
-    $jsonString = '[{"id": 1, "name": "John Doe", "age": 25}, {"id": 2, "name": "Jane Smith", "age": 30}]';
-    $jbreeze->data($jsonString)->where(['age' => '>25'])->run();
+$jsonString = '[{"id": 1, "name": "John Doe", "age": 25}, {"id": 2, "name": "Jane Smith", "age": 30}]';
+$jbreeze->data($jsonString)->where(['age' => '>25'])->run();
 
 ```
 
-Expected Response (JSON Format):
+> Expected Response (JSON Format):
 For both the JSON file and raw JSON string, you would get the same result:
 ```json
 
-    {
-        "status": "success",
-        "result": [
-            {
-                "id": 2,
-                "name": "Jane Smith",
-                "age": 30
-            }
-        ],
-        "timestamp": "2024-10-04T12:34:56+00:00"
-    }
+{
+    "status": "success",
+    "result": [
+        {
+            "id": 2,
+            "name": "Jane Smith",
+            "age": 30
+        }
+    ],
+    "timestamp": "2024-10-04T12:34:56+00:00"
+}
 
 ```
 
@@ -472,39 +473,38 @@ For both the JSON file and raw JSON string, you would get the same result:
 ### Example: Successful Modification (Insert/Update/Delete)
 If you perform an insert, update, or delete, the response will also include a success message. For instance, after inserting a new record:
 
-Insert Example:
+> Insert Example:
 ```php
 
-    $newRecord = ['name' => 'Alice Cooper', 'age' => 30];
-    $jbreeze->insert($newRecord, 'id')->run();
+$newRecord = ['name' => 'Alice Cooper', 'age' => 30];
+$jbreeze->insert($newRecord, 'id')->run();
 
 ```
 
-Expected Response (JSON Format):
-
+> Expected Response (JSON Format):
 ```json
 
-    {
-        "status": "success",
-        "result": [
-            {
-                "id": 1,
-                "name": "John Doe",
-                "age": 25
-            },
-            {
-                "id": 2,
-                "name": "Jane Smith",
-                "age": 30
-            },
-            {
-                "id": 3,
-                "name": "Alice Cooper",
-                "age": 30
-            }
-        ],
-        "timestamp": "2024-10-04T12:34:56+00:00"
-    }
+{
+    "status": "success",
+    "result": [
+        {
+            "id": 1,
+            "name": "John Doe",
+            "age": 25
+        },
+        {
+            "id": 2,
+            "name": "Jane Smith",
+            "age": 30
+        },
+        {
+            "id": 3,
+            "name": "Alice Cooper",
+            "age": 30
+        }
+    ],
+    "timestamp": "2024-10-04T12:34:56+00:00"
+}
 
 ```
 
@@ -513,26 +513,26 @@ Expected Response (JSON Format):
 ### Example: Error Handling
 When an error occurs, jbreeze will return an error response. This response contains details about the error(s) encountered, including the error code, human-readable message, and timestamp.
 
-Example: Error Scenario (Invalid Filter Key)
+> Example: Error Scenario (Invalid Filter Key)
 ```php
 
-    $jbreeze->data($jsonString)->where(['unknown_key' => 'value'])->run();
+$jbreeze->data($jsonString)->where(['unknown_key' => 'value'])->run();
 
 ```
 
-Expected Error Response (JSON Format):
+> Expected Error Response (JSON Format):
 ```json
 
-    {
-        "status": "error",
-        "errors": [
-            {
-                "code": "KEY|NOTFOUND",
-                "message": "The key 'unknown_key' was not found."
-            }
-        ],
-        "timestamp": "2024-10-04T12:34:56+00:00"
-    }
+{
+    "status": "error",
+    "errors": [
+        {
+            "code": "KEY|NOTFOUND",
+            "message": "The key 'unknown_key' was not found."
+        }
+    ],
+    "timestamp": "2024-10-04T12:34:56+00:00"
+}
 
 ```
 
@@ -542,20 +542,20 @@ Expected Error Response (JSON Format):
     * message: A human-readable message describing the error.
 * timestamp: The time the error occurred, in ISO 8601 format.
 
-Example: Error Scenario (File Save Error)
+> Example: Error Scenario (File Save Error)
 If there is an issue when saving to a JSON file (e.g., file permissions), you might receive an error like this:
 ```json
 
-    {
-        "status": "error",
-        "errors": [
-            {
-                "code": "FILE|SAVEERROR",
-                "message": "Failed to save changes to the JSON file."
-            }
-        ],
-        "timestamp": "2024-10-04T12:34:56+00:00"
-    }
+{
+    "status": "error",
+    "errors": [
+        {
+            "code": "FILE|SAVEERROR",
+            "message": "Failed to save changes to the JSON file."
+        }
+    ],
+    "timestamp": "2024-10-04T12:34:56+00:00"
+}
 
 ```
 
@@ -572,21 +572,21 @@ When an error occurs, the response will include:
 
 ```json
 
-    {
-        "JSON|INVALID": "Invalid JSON data provided.",
-        "KEY|NOTFOUND": "The specified key was not found in the dataset.",
-        "KEY|INVALID": "The provided key is invalid. It must pass validation.",
-        "KEY|INVALIDVALUE": "Invalid value for the key. Expected an integer value.",
-        "INSERT|EXTRAKEY": "Attempted to insert a record with an extra key not allowed in the dataset.",
-        "DATA|EMPTY": "The dataset is empty or no matching records were found.",
-        "BETWEEN|INVALIDRANGE": "Invalid range provided in the between() method. Exactly two values are required.",
-        "BETWEEN|INVALIDKEY": "The specified key in the between() method was not found in the dataset.",
-        "BETWEEN|NOTFOUND": "No records were found for the specified range in the between() method.",
-        "ORDER|NODATA": "No data available to order using the order() method.",
-        "ORDER|INVALIDCOLUMN": "The specified column for sorting does not exist in the dataset.",
-        "FILE|SAVEERROR": "An error occurred while trying to save the file. Check file permissions or file system issues.",
-        "QUERY|NODATAFOUND": "No data found"
-    }
+{
+    "JSON|INVALID": "Invalid JSON data provided.",
+    "KEY|NOTFOUND": "The specified key was not found in the dataset.",
+    "KEY|INVALID": "The provided key is invalid. It must pass validation.",
+    "KEY|INVALIDVALUE": "Invalid value for the key. Expected an integer value.",
+    "INSERT|EXTRAKEY": "Attempted to insert a record with an extra key not allowed in the dataset.",
+    "DATA|EMPTY": "The dataset is empty or no matching records were found.",
+    "BETWEEN|INVALIDRANGE": "Invalid range provided in the between() method. Exactly two values are required.",
+    "BETWEEN|INVALIDKEY": "The specified key in the between() method was not found in the dataset.",
+    "BETWEEN|NOTFOUND": "No records were found for the specified range in the between() method.",
+    "ORDER|NODATA": "No data available to order using the order() method.",
+    "ORDER|INVALIDCOLUMN": "The specified column for sorting does not exist in the dataset.",
+    "FILE|SAVEERROR": "An error occurred while trying to save the file. Check file permissions or file system issues.",
+    "QUERY|NODATAFOUND": "No data found"
+}
 
 ```
 
@@ -635,33 +635,33 @@ Let’s use the following deeply nested JSON structure for all examples:
 1. Filtering Data Based on Deeply Nested Fields
 Let’s filter the records based on the `area` inside the nested `address.zip` structure, selecting only those where the `area` is `"Queens"`.
 
-Code:
+> Code:
 ```php
 
-    require 'vendor/autoload.php';
+require 'vendor/autoload.php';
 
-    use Json\jbreeze;
+use Json\jbreeze;
 
-    $jsonString = '[{
-        "id": 1, "name": "John Doe", "address": {"city": "New York", "zip": {"code": 10001, "area": "Queens"}}
-      },
-      {
-        "id": 2, "name": "Jane Smith", "address": {"city": "Los Angeles", "zip": {"code": 90001, "area": "Downtown"}}
-      },
-      {
-        "id": 3, "name": "Bob Johnson", "address": {"city": "New York", "zip": {"code": 10002, "area": "Brooklyn"}}
-    }]';
+$jsonString = '[{
+    "id": 1, "name": "John Doe", "address": {"city": "New York", "zip": {"code": 10001, "area": "Queens"}}
+  },
+  {
+    "id": 2, "name": "Jane Smith", "address": {"city": "Los Angeles", "zip": {"code": 90001, "area": "Downtown"}}
+  },
+  {
+    "id": 3, "name": "Bob Johnson", "address": {"city": "New York", "zip": {"code": 10002, "area": "Brooklyn"}}
+}]';
 
-    $jbreeze = new jbreeze();
-    $filteredData = $jbreeze->data($jsonString)
-        ->where(['address.zip.area' => 'Queens'])
-        ->run();
+$jbreeze = new jbreeze();
+$filteredData = $jbreeze->data($jsonString)
+    ->where(['address.zip.area' => 'Queens'])
+    ->run();
 
-    echo $filteredData;
+echo $filteredData;
 
 ```
 
-Expected Output (JSON):
+> Expected Output (JSON):
 ```json
 
 [
@@ -683,118 +683,118 @@ Expected Output (JSON):
 2. Updating a Deeply Nested Field
 Let’s update the `city` for all records where the `zip.code` is `10002`. We will change the city from "New York" to "Brooklyn Heights."
 
-Code:
+> Code:
 ```php
 
-    require 'vendor/autoload.php';
+require 'vendor/autoload.php';
 
-    use Json\jbreeze;
+use Json\jbreeze;
     
-    $jsonString = '[{
-        "id": 1, "name": "John Doe", "address": {"city": "New York", "zip": {"code": 10001, "area": "Queens"}}
-      },
-      {
-        "id": 2, "name": "Jane Smith", "address": {"city": "Los Angeles", "zip": {"code": 90001, "area": "Downtown"}}
-      },
-      {
-        "id": 3, "name": "Bob Johnson", "address": {"city": "New York", "zip": {"code": 10002, "area": "Brooklyn"}}
-    }]';
+$jsonString = '[{
+    "id": 1, "name": "John Doe", "address": {"city": "New York", "zip": {"code": 10001, "area": "Queens"}}
+  },
+  {
+    "id": 2, "name": "Jane Smith", "address": {"city": "Los Angeles", "zip": {"code": 90001, "area": "Downtown"}}
+  },
+  {
+    "id": 3, "name": "Bob Johnson", "address": {"city": "New York", "zip": {"code": 10002, "area": "Brooklyn"}}
+}]';
     
-    $jbreeze = new jbreeze();
-    $jbreeze->data($jsonString)
-        ->where(['address.zip.code' => 10002])
-        ->update(['address.city' => 'Brooklyn Heights'])
-        ->run();
+$jbreeze = new jbreeze();
+$jbreeze->data($jsonString)
+    ->where(['address.zip.code' => 10002])
+    ->update(['address.city' => 'Brooklyn Heights'])
+    ->run();
 
 ```
 
-Expected Output (JSON):
+> Expected Output (JSON):
 ```json
 
-    [
-        {
-            "id": 1,
-            "name": "John Doe",
-            "address": {
-                "city": "New York",
-                "zip": {
-                    "code": 10001,
-                    "area": "Queens"
-                }
-            }
-        },
-        {
-            "id": 2,
-            "name": "Jane Smith",
-            "address": {
-                "city": "Los Angeles",
-                "zip": {
-                    "code": 90001,
-                    "area": "Downtown"
-                }
-            }
-        },
-        {
-            "id": 3,
-            "name": "Bob Johnson",
-            "address": {
-                "city": "Brooklyn Heights",
-                "zip": {
-                    "code": 10002,
-                    "area": "Brooklyn"
-                }
+[
+    {
+        "id": 1,
+        "name": "John Doe",
+        "address": {
+            "city": "New York",
+            "zip": {
+                "code": 10001,
+                "area": "Queens"
             }
         }
-    ]
+    },
+    {
+        "id": 2,
+        "name": "Jane Smith",
+        "address": {
+            "city": "Los Angeles",
+            "zip": {
+                "code": 90001,
+                "area": "Downtown"
+            }
+        }
+    },
+    {
+        "id": 3,
+        "name": "Bob Johnson",
+        "address": {
+            "city": "Brooklyn Heights",
+            "zip": {
+                "code": 10002,
+                "area": "Brooklyn"
+            }
+        }
+    }
+]
 
 ```
 
 3. Selecting Specific Nested Fields
 In this example, we’ll select only the `name` and the `code` field inside `address.zip` from the dataset.
 
-Code:
+> Code:
 ```php
 
-    require 'vendor/autoload.php';
+require 'vendor/autoload.php';
 
-    use Json\jbreeze;
+use Json\jbreeze;
 
-    $jsonString = '[{
-        "id": 1, "name": "John Doe", "address": {"city": "New York", "zip": {"code": 10001, "area": "Queens"}}
-      },
-      {
-        "id": 2, "name": "Jane Smith", "address": {"city": "Los Angeles", "zip": {"code": 90001, "area": "Downtown"}}
-      },
-      {
-        "id": 3, "name": "Bob Johnson", "address": {"city": "New York", "zip": {"code": 10002, "area": "Brooklyn"}}
-    }]';
+$jsonString = '[{
+    "id": 1, "name": "John Doe", "address": {"city": "New York", "zip": {"code": 10001, "area": "Queens"}}
+  },
+  {
+    "id": 2, "name": "Jane Smith", "address": {"city": "Los Angeles", "zip": {"code": 90001, "area": "Downtown"}}
+  },
+  {
+    "id": 3, "name": "Bob Johnson", "address": {"city": "New York", "zip": {"code": 10002, "area": "Brooklyn"}}
+}]';
 
-    $jbreeze = new jbreeze();
-    $selectedData = $jbreeze->data($jsonString)
-        ->select(['name', 'address.zip.code'])
-        ->run();
+$jbreeze = new jbreeze();
+$selectedData = $jbreeze->data($jsonString)
+    ->select(['name', 'address.zip.code'])
+    ->run();
 
-    echo $selectedData;
+echo $selectedData;
 
 ```
 
-Expected Output (JSON):
+> Expected Output (JSON):
 ```json
 
-    [
-        {
-            "name": "John Doe",
-            "address.zip.code": 10001
-        },
-        {
-            "name": "Jane Smith",
-            "address.zip.code": 90001
-        },
-        {
-            "name": "Bob Johnson",
-            "address.zip.code": 10002
-        }
-    ]
+[
+    {
+        "name": "John Doe",
+        "address.zip.code": 10001
+    },
+    {
+        "name": "Jane Smith",
+        "address.zip.code": 90001
+    },
+    {
+        "name": "Bob Johnson",
+        "address.zip.code": 10002
+    }
+]
 
 ```
 
