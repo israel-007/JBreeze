@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`Jbreeze` is a lightweight PHP library designed for seamless manipulation, querying, and handling of JSON data. With an intuitive, chainable API, it provides the ability to filter, update, insert, delete, and sort data directly from JSON files or raw JSON strings.
+Jbreeze is a lightweight PHP library designed for seamless manipulation, querying, and handling of JSON data. With an intuitive, chainable API, it provides the ability to filter, update, insert, delete, and sort data directly from JSON files or raw JSON strings.
 
 The library is equipped with robust error handling, supports complex filtering with dot notation (for nested JSON keys), and allows you to structure your data by automatically ordering keys. Whether you're working with large datasets or performing simple operations, jbreeze makes it easy to interact with JSON in an elegant and efficient way.
 
