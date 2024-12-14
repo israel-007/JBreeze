@@ -43,10 +43,20 @@ class jbreeze
     {
         try {
             if (is_file($input)) {
-                // If it's a file path, read the file and decode the JSON
                 $this->jsonFilePath = $input;
-                $jsonContent = file_get_contents($input);
+
+                // Lock the file for shared access
+                $fileHandle = $this->lockFile(LOCK_SH);
+                if (!$fileHandle) {
+                    throw new Exception("FILE|LOCKFAILED");
+                }
+
+                // Read the file content
+                $jsonContent = fread($fileHandle, filesize($input));
                 $this->data = json_decode($jsonContent, true);
+
+                $this->unlockFile($fileHandle); // Unlock after reading
+
             } else {
                 // If it's a raw JSON string, decode it directly
                 $this->data = json_decode($input, true);
@@ -527,9 +537,30 @@ class jbreeze
     protected function finalize(bool $operationResult = true)
     {
         if ($this->jsonFilePath) {
-            // Order keys alphabetically for all records before saving
-            $this->data = array_map([$this, 'orderKeysAlphabetically'], $this->data);
-            return $this->saveToFile() ? true : false;
+
+            try {
+                // Lock the file for exclusive access
+                $fileHandle = $this->lockFile(LOCK_EX);
+                if (!$fileHandle) {
+                    throw new Exception("FILE|LOCKFAILED");
+                }
+
+                // Order keys alphabetically for all records before saving
+                $this->data = array_map([$this, 'orderKeysAlphabetically'], $this->data);
+
+                // Delegate to saveToFile() to perform the actual file writing
+                $saveResult = $this->saveToFile();
+
+                // Unlock the file after saving
+                $this->unlockFile($fileHandle);
+
+                return $saveResult ? true : false;
+
+            } catch (Exception $e) {
+                $this->logException($e->getMessage());
+                return false;
+            }
+
         } else {
             return $operationResult ? json_encode($this->data, JSON_PRETTY_PRINT) : false;
         }
@@ -702,6 +733,41 @@ class jbreeze
 
         return $errorHandler->GetErrorsLog();
 
+    }
+
+    protected function lockFile($mode, $retryInterval = 100, $timeout = 5000)
+    {
+        try {
+            // Open the file for reading/writing
+            $fileHandle = fopen($this->jsonFilePath, 'c+');
+            if (!$fileHandle) {
+                throw new Exception("FILE|OPENFAILED");
+            }
+
+            $startTime = microtime(true);
+
+            // Retry mechanism
+            while (!flock($fileHandle, $mode)) {
+                usleep($retryInterval * 1000); // Retry interval in milliseconds
+                if ((microtime(true) - $startTime) * 1000 >= $timeout) {
+                    fclose($fileHandle);
+                    throw new Exception("FILE|LOCKTIMEOUT");
+                }
+            }
+
+            return $fileHandle; // Return the file handle for further operations
+
+        } catch (Exception $e) {
+            $this->logException($e->getMessage());
+            return false;
+        }
+    }
+    protected function unlockFile($fileHandle)
+    {
+        if ($fileHandle) {
+            flock($fileHandle, LOCK_UN);  // Release the lock
+            fclose($fileHandle);         // Close the file handle
+        }
     }
 }
 

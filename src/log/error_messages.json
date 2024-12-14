@@ -11,5 +11,8 @@
     "ORDER|NODATA": "No data available to order using the order() method.",
     "ORDER|INVALIDCOLUMN": "The specified column for sorting does not exist in the dataset.",
     "FILE|SAVEERROR": "An error occurred while trying to save the file. Check file permissions or file system issues.",
-    "QUERY|NODATAFOUND": "No data found"
+    "QUERY|NODATAFOUND": "No data found.",
+    "FILE|OPENFAILED": "An error occured while trying to open file.",
+    "FILE|LOCKTIMEOUT": "An error occured, file lock timed out.",
+    "FILE|LOCKFAILED": "An error occured while trying to lock file."
 }
