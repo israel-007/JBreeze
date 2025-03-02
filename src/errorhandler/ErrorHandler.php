@@ -22,9 +22,9 @@ class ErrorHandler
         $this->errorMessages = $this->loadErrorMessages(__DIR__ . '/../log/error_messages.json');
         // Set configurations with defaults
         $this->logFile = $config['log_file'] ?? __DIR__ . '/../log/error_log.txt';
-        $this->displayErrors = $config['display_errors'] ?? false;
+        $this->displayErrors = $config['display_errors'] ?? true;
         $this->environment = $config['environment'] ?? 'production';
-        $this->returnType = $config['returnType'];
+        $this->returnType = $config['returnType'] ?? 'json';
     }
 
     /**
