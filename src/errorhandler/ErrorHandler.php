@@ -22,9 +22,9 @@ class ErrorHandler
         $this->errorMessages = $this->loadErrorMessages(__DIR__ . '/../log/error_messages.json');
         // Set configurations with defaults
         $this->logFile = $config['log_file'] ?? __DIR__ . '/../log/error_log.txt';
-        $this->displayErrors = $config['display_errors'] ?? false;
+        $this->displayErrors = $config['display_errors'] ?? true;
         $this->environment = $config['environment'] ?? 'production';
-        $this->returnType = $config['returnType'];
+        $this->returnType = $config['returnType'] ?? 'json';
     }
 
     /**
@@ -32,15 +32,19 @@ class ErrorHandler
      * 
      * @param string $filePath The path to the JSON file.
      * @return array The array of error messages.
-     */    
+     */
     private function loadErrorMessages(string $filePath)
     {
-        if (file_exists($filePath)) {
-            $jsonData = file_get_contents($filePath);
-            return json_decode($jsonData, true);
+        if (!file_exists($filePath)) {
+            return [];
         }
-        return [];
+
+        $jsonData = file_get_contents($filePath);
+        $decoded = json_decode($jsonData, true);
+
+        return is_array($decoded) ? $decoded : [];
     }
+
 
     /**
      * Handles one or more errors, logs them, and returns the appropriate response.
@@ -76,7 +80,7 @@ class ErrorHandler
             'timestamp' => date('c'),
         ];
         
-        return $this->sendResponse($response, $error);
+        return $this->sendResponse($response);
     }
 
     /**
@@ -103,9 +107,17 @@ class ErrorHandler
     {
         if ($this->environment === 'production') {
             $logMessage = "[" . date('Y-m-d H:i:s') . "] Shortcode: $shortcode | Message: $message" . PHP_EOL;
-            file_put_contents($this->logFile, $logMessage, FILE_APPEND);
+
+            $fp = fopen($this->logFile, 'a'); // Open file in append mode
+            if ($fp) {
+                flock($fp, LOCK_EX); // Lock file for exclusive writing
+                fwrite($fp, $logMessage);
+                flock($fp, LOCK_UN); // Unlock
+                fclose($fp);
+            }
         }
     }
+
 
     /**
      * Sends the error response, either in JSON or array format.
@@ -114,41 +126,23 @@ class ErrorHandler
      * @param string $code The error code to include in the response.
      * @return mixed The formatted response, either as an array or JSON string.
      */
-    private function sendResponse(array $Response, string $code)
+    private function sendResponse(array $response)
     {
         // Optionally display errors in non-production environments
         if ($this->displayErrors || $this->environment !== 'production') {
-
-            switch ($this->returnType) {
-                case 'array':
-                    return $Response;  // Return response as an array
-
-                case 'json':
-                default:
-                    return json_encode($Response, JSON_PRETTY_PRINT); // Convert the response to JSON
-            }
-
-        } else {
-
-            $responseTemplate =
-            [
-                'status' => 'error',
-                'code' => $code,
-                'message' => 'An error occurred. Please contact support.',
-                'timestamp' => date('c')
-            ];
-
-            switch ($this->returnType) {
-                case 'array':
-                    return $responseTemplate;  // Return response as an array
-
-                case 'json':
-                default:
-                    return json_encode($responseTemplate, JSON_PRETTY_PRINT); // Convert the response to JSON
-            }
-
+            return $this->returnType === 'array' ? $response : json_encode($response, JSON_PRETTY_PRINT);
         }
+
+        // Generic error response for production mode
+        $responseTemplate = [
+            'status' => 'error',
+            'message' => 'An error occurred. Please contact support.',
+            'timestamp' => date('c')
+        ];
+
+        return $this->returnType === 'array' ? $responseTemplate : json_encode($responseTemplate, JSON_PRETTY_PRINT);
     }
+
 
     /**
      * Retrieves the error log contents and parses them into an array.
@@ -157,29 +151,30 @@ class ErrorHandler
      */
     public function GetErrorsLog()
     {
-        // Check if the log file exists
         if (!file_exists($this->logFile)) {
             return [];
         }
 
-        // Read the contents of the log file
+        $logs = [];
         $logContents = file($this->logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-        // Split each log line into an array
-        $logsArray = [];
         foreach ($logContents as $line) {
-            // Assuming log format: "[timestamp] Shortcode: CODE | Message: MESSAGE"
-            preg_match('/^\[(.*?)\] Shortcode: (.*?) \| Message: (.*)$/', $line, $matches);
-            if (count($matches) === 4) {
-                $logsArray[] = [
+            $parts = explode(" | Message: ", $line, 2);
+            if (count($parts) !== 2)
+                continue; // Skip malformed lines
+
+            preg_match('/^\[(.*?)\] Shortcode: (.*)$/', $parts[0], $matches);
+            if (count($matches) === 3) {
+                $logs[] = [
+                    'timestamp' => $matches[1],
                     'code' => $matches[2],
-                    'message' => $matches[3],
-                    'timestamp' => $matches[1]
+                    'message' => trim($parts[1])
                 ];
             }
         }
 
-        return $logsArray;
+        return $logs;
     }
+
 
 }

@@ -41,6 +41,8 @@ class jbreeze
      */
     public function data(string $input)
     {
+        $errorHandler = new ErrorHandler($this->config); // Initialize ErrorHandler
+
         try {
             if (is_file($input)) {
                 $this->jsonFilePath = $input;
@@ -51,33 +53,41 @@ class jbreeze
                     throw new Exception("FILE|LOCKFAILED");
                 }
 
-                // Read the file content
-                $jsonContent = fread($fileHandle, filesize($input));
+                // Read file contents
+                $jsonContent = file_get_contents($input);
+                fclose($fileHandle); // Close file after reading
+
+                // Handle empty file scenario
+                if (trim($jsonContent) === '') {
+                    $this->data = []; // Empty dataset
+                    $this->existingKeys = []; // No keys yet
+                    return $this; // Allow chaining
+                }
+
+                // Decode JSON data
                 $this->data = json_decode($jsonContent, true);
-
-                $this->unlockFile($fileHandle); // Unlock after reading
-
             } else {
                 // If it's a raw JSON string, decode it directly
                 $this->data = json_decode($input, true);
             }
 
+            // Ensure valid data format
             if (!is_array($this->data)) {
                 throw new Exception("JSON|INVALID");
             }
 
-            // Order keys alphabetically for all existing records
-            $this->data = array_map([$this, 'orderKeysAlphabetically'], $this->data);
+            // If data is empty, set empty keys for future inserts
+            $this->existingKeys = empty($this->data) ? [] : array_keys(reset($this->data));
 
-            // Set the first record's keys as the reference for future inserts
-            $this->existingKeys = array_keys(reset($this->data));
-            $this->filteredData = $this->data; // Initially, filteredData is the whole data set
+            // Initially, filteredData is the full dataset
+            $this->filteredData = $this->data;
 
         } catch (Exception $e) {
-            $this->logException($e->getMessage()); // Log the exception
+            $this->logException($e->getMessage());
+            return $errorHandler->handle($e->getMessage());
         }
 
-        return $this; // Enable chaining
+        return $this; // Enable method chaining
     }
 
     /**
@@ -179,32 +189,33 @@ class jbreeze
      */
     public function order(string $column, string $direction = 'DESC')
     {
+        $errorHandler = new ErrorHandler($this->config); // Initialize error handler
+
         try {
-            // Check if data exists
             if (empty($this->filteredData)) {
                 throw new Exception("ORDER|NODATA");
             }
 
-            // Sorting logic
-            usort($this->filteredData, function ($a, $b) use ($column, $direction) {
-                // Ensure the column exists in both rows
-                if (!isset($a[$column]) || !isset($b[$column])) {
+            // Check if column exists in all records
+            foreach ($this->filteredData as $record) {
+                if (!array_key_exists($column, $record)) {
                     throw new Exception("ORDER|INVALIDCOLUMN: " . $column);
                 }
+            }
 
-                // Compare based on the direction
-                if (strtoupper($direction) === 'ASC') {
-                    return $a[$column] <=> $b[$column]; // Ascending order
-                } else {
-                    return $b[$column] <=> $a[$column]; // Descending order
-                }
+            // Sort the data
+            usort($this->filteredData, function ($a, $b) use ($column, $direction) {
+                return strtoupper($direction) === 'ASC'
+                    ? $a[$column] <=> $b[$column]
+                    : $b[$column] <=> $a[$column];
             });
 
         } catch (Exception $e) {
-            $this->logException($e->getMessage()); // Log any exceptions
+            $this->logException($e->getMessage());
+            return $errorHandler->handle($e->getMessage());
         }
 
-        return $this; // Enable chaining
+        return $this;
     }
 
     /**
@@ -335,27 +346,42 @@ class jbreeze
      * @return self
      * @throws Exception If no matching data is found.
      */
+    // public function find(string $key, $value)
+    // {
+    //     try {
+    //         $found = false;
+    //         foreach ($this->data as $item) {
+    //             if (isset($item[$key]) && $item[$key] == $value) {
+    //                 $this->filteredData = [$item];
+    //                 $found = true;
+    //                 break;
+    //             }
+    //         }
+
+    //         if (!$found) {
+    //             throw new Exception("QUERY|NODATAFOUND");
+    //         }
+
+    //     } catch (Exception $e) {
+    //         $this->logException($e->getMessage());
+    //     }
+
+    //     return $this; // Enable chaining
+    // }
+
     public function find(string $key, $value)
     {
         try {
-            $found = false;
-            foreach ($this->data as $item) {
-                if (isset($item[$key]) && $item[$key] == $value) {
-                    $this->filteredData = [$item];
-                    $found = true;
-                    break;
-                }
-            }
+            $this->filteredData = array_filter($this->data, fn($item) => isset($item[$key]) && $item[$key] === $value);
 
-            if (!$found) {
+            if (empty($this->filteredData)) {
                 throw new Exception("QUERY|NODATAFOUND");
             }
-
         } catch (Exception $e) {
             $this->logException($e->getMessage());
         }
 
-        return $this; // Enable chaining
+        return $this;
     }
 
     /**
@@ -382,45 +408,62 @@ class jbreeze
      */
     public function insert(array $newValues, ?string $primaryKey = null)
     {
+        $errorHandler = new ErrorHandler($this->config); // Initialize error handler
+
         try {
             $this->isInsert = true;
             $this->newValues = $newValues;
             $this->primaryKey = $primaryKey;
 
-            // Get the last record in the dataset and use its keys as the schema reference
-            $lastRecord = end($this->data);
-            if (!$lastRecord) {
-                throw new Exception("DATA|EMPTY"); // No data in the dataset
-            }
-            $existingKeys = array_keys($lastRecord);  // Keys from the last record
+            // Check if dataset is empty
+            if (empty($this->data)) {
+                // If a primary key is specified, ensure it exists in the new values
+                if ($primaryKey && !isset($newValues[$primaryKey])) {
+                    $this->newValues[$primaryKey] = 1; // Start primary key from 1
+                }
 
-            // Validate the new record's keys against the last record's keys
+                $this->data[] = $this->newValues;
+
+                // Save immediately if a JSON file exists
+                if ($this->jsonFilePath) {
+                    $this->saveToFile();
+                }
+
+                return $this;
+            }
+
+            // If there are existing records, validate the keys
+            $lastRecord = end($this->data);
+            $existingKeys = array_keys($lastRecord);
+
             $this->validateNewRecordKeys($newValues, $existingKeys);
 
-            // If a primary key is provided, validate and assign the next key
+            // Assign a new primary key value if applicable
             if ($primaryKey) {
-                // Validate that the primary key exists and its values are integers
                 if (!$this->validatePrimaryKey($primaryKey, $existingKeys)) {
                     throw new Exception("KEY|INVALID");
                 }
 
-                // Get the next available primary key value
-                $newKeyValue = $this->getNextPrimaryKeyValue($primaryKey);
-                if ($newKeyValue === false) {
-                    throw new Exception("KEY|INVALID");
-                }
-
-                // Add the primary key to the new values
-                $this->newValues[$primaryKey] = $newKeyValue;
+                // Get the next primary key only if there is existing data
+                $this->newValues[$primaryKey] = $this->getNextPrimaryKeyValue($primaryKey);
             }
 
-            // Order the keys of the new record alphabetically
+            // Order keys alphabetically
             $this->newValues = $this->orderKeysAlphabetically($this->newValues);
 
-            return $this; // Enable chaining
+            // Add new record to data
+            $this->data[] = $this->newValues;
+
+            // If JSON file exists, save immediately
+            if ($this->jsonFilePath) {
+                $this->saveToFile();
+            }
+
+            return $this;
+
         } catch (Exception $e) {
-            $this->logException($e->getMessage()); // Log the exception
-            return $this;  // Return $this even after exception to maintain chain
+            $this->logException($e->getMessage());
+            return $errorHandler->handle($e->getMessage()); // Log and return error
         }
     }
 
@@ -474,7 +517,7 @@ class jbreeze
             if ($this->isInsert) {
                 $this->data[] = $this->newValues;
                 $this->resetFlags();
-                return $this->finalize();
+                // return $this->finalize();
             }
 
             if ($this->isUpdate) {
@@ -519,6 +562,8 @@ class jbreeze
                 'timestamp' => date('c')
             ];
 
+            $this->resetFlags();
+
             return $returnType === 'array' ? $response : json_encode($response, JSON_PRETTY_PRINT);
 
         } catch (Exception $e) {
@@ -526,7 +571,6 @@ class jbreeze
             return $errorHandler->handle($this->exceptions);
         }
     }
-
 
     /**
      * Finalizes the operation by saving the updated dataset to a file or returning the result.
@@ -545,11 +589,11 @@ class jbreeze
                     throw new Exception("FILE|LOCKFAILED");
                 }
 
-                // Order keys alphabetically for all records before saving
-                $this->data = array_map([$this, 'orderKeysAlphabetically'], $this->data);
+                // Optionally, if you still want to order keys for saving, do it here
+                // $this->data = array_map([$this, 'orderKeysAlphabetically'], $this->data);
 
-                // Delegate to saveToFile() to perform the actual file writing
-                $saveResult = $this->saveToFile();
+                // Write data using the locked file handle
+                $saveResult = $this->saveToFile($fileHandle);
 
                 // Unlock the file after saving
                 $this->unlockFile($fileHandle);
@@ -572,12 +616,23 @@ class jbreeze
      * @return bool True on success, false on failure.
      * @throws Exception If an error occurs during file saving.
      */
-    protected function saveToFile()
+    protected function saveToFile($fileHandle = null)
     {
         try {
             if ($this->jsonFilePath) {
-                if (file_put_contents($this->jsonFilePath, json_encode($this->data, JSON_PRETTY_PRINT)) === false) {
-                    throw new Exception("FILE|SAVEERROR");
+                $jsonData = json_encode($this->data, JSON_PRETTY_PRINT);
+                if ($fileHandle) {
+                    // Truncate the file, rewind the pointer, and write the new content
+                    ftruncate($fileHandle, 0);
+                    rewind($fileHandle);
+                    if (fwrite($fileHandle, $jsonData) === false) {
+                        throw new Exception("FILE|SAVEERROR");
+                    }
+                } else {
+                    // Fallback if no file handle is provided
+                    if (file_put_contents($this->jsonFilePath, $jsonData) === false) {
+                        throw new Exception("FILE|SAVEERROR");
+                    }
                 }
             }
         } catch (Exception $e) {
@@ -596,26 +651,24 @@ class jbreeze
      */
     protected function getNextPrimaryKeyValue(string $primaryKey)
     {
-        try {
-            $maxValue = null;
+        $errorHandler = new ErrorHandler($this->config); // Initialize error handler
 
-            // Iterate over the dataset to find the maximum value of the primary key
-            foreach ($this->data as $record) {
-                if (isset($record[$primaryKey]) && is_int($record[$primaryKey])) {
-                    if ($maxValue === null || $record[$primaryKey] > $maxValue) {
-                        $maxValue = $record[$primaryKey];
-                    }
-                } else if (isset($record[$primaryKey])) {
-                    throw new Exception("KEY|INVALIDVALUE"); // Non-integer value found
-                }
+        try {
+            // Get valid integer values only
+            $validKeys = array_filter($this->data, fn($record) => isset($record[$primaryKey]) && is_int($record[$primaryKey]));
+
+            if (empty($validKeys)) {
+                return 1; // Start from 1 if no valid primary keys exist
             }
 
-            // Return the next primary key value by incrementing the max value
-            return ($maxValue !== null) ? $maxValue + 1 : 1; // If no values found, return 1
+            // Get the max valid primary key value
+            $nextKey = max(array_column($validKeys, $primaryKey)) + 1;
+
+            return $nextKey;
 
         } catch (Exception $e) {
-            $this->logException($e->getMessage()); // Log the exception
-            return false; // Return false if something goes wrong
+            $this->logException($e->getMessage());
+            return $errorHandler->handle($e->getMessage()); // Log and return error
         }
     }
 
@@ -676,7 +729,7 @@ class jbreeze
 
             // Automatically add missing keys with empty values (null)
             foreach ($missingKeys as $missingKey) {
-                $this->newValues[$missingKey] = null;
+                $this->newValues[$missingKey] = '';
             }
 
         } catch (Exception $e) {
@@ -697,8 +750,10 @@ class jbreeze
         $this->isInsert = false;
         $this->primaryKey = null;
         $this->newValues = [];
-        $this->filteredData = $this->data; // Reset filtered data
-        $this->exceptions = []; // Reset exceptions after handling them
+        $this->exceptions = [];
+
+        // Ensure filteredData resets back to the full dataset
+        $this->filteredData = $this->data;
     }
 
     /**
@@ -737,29 +792,32 @@ class jbreeze
 
     protected function lockFile($mode, $retryInterval = 100, $timeout = 5000)
     {
+        $errorHandler = new ErrorHandler($this->config); // Initialize error handler
+
         try {
-            // Open the file for reading/writing
+            if (!$this->jsonFilePath) {
+                throw new Exception("FILE|NOPATH");
+            }
+
             $fileHandle = fopen($this->jsonFilePath, 'c+');
             if (!$fileHandle) {
                 throw new Exception("FILE|OPENFAILED");
             }
 
             $startTime = microtime(true);
-
-            // Retry mechanism
             while (!flock($fileHandle, $mode)) {
-                usleep($retryInterval * 1000); // Retry interval in milliseconds
+                usleep($retryInterval * 1000);
                 if ((microtime(true) - $startTime) * 1000 >= $timeout) {
                     fclose($fileHandle);
                     throw new Exception("FILE|LOCKTIMEOUT");
                 }
             }
 
-            return $fileHandle; // Return the file handle for further operations
+            return $fileHandle;
 
         } catch (Exception $e) {
             $this->logException($e->getMessage());
-            return false;
+            return $errorHandler->handle($e->getMessage()); // Log and return error response
         }
     }
     protected function unlockFile($fileHandle)

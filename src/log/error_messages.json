@@ -14,5 +14,6 @@
     "QUERY|NODATAFOUND": "No data found.",
     "FILE|OPENFAILED": "An error occured while trying to open file.",
     "FILE|LOCKTIMEOUT": "An error occured, file lock timed out.",
-    "FILE|LOCKFAILED": "An error occured while trying to lock file."
+    "FILE|LOCKFAILED": "An error occured while trying to lock file.",
+    "FILE|NOPATH": "An error occured, file not found."
 }
