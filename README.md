@@ -307,10 +307,12 @@ print_r($result);
 
 ### `structuredData()`
 
-> Structured Mode (structured = true)
+Structured Mode (structured = true)
 
 > Schema enforcement is enabled (keys present in the Json data given)
+
 > Extra fields are rejected
+
 > Missing fields are auto-filled with default values
 
 ```php
@@ -348,10 +350,12 @@ $jb->data('jb_data/users.json')->insert([
 
 ```
 
-> Unstructured Mode (structured = false)
+Unstructured Mode (structured = false)
 
 > No schema validation
+
 > All fields are accepted (including unknown ones)
+
 > No default values are applied
 
 ```php
