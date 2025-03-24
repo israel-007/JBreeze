@@ -15,5 +15,6 @@
     "FILE|OPENFAILED": "An error occured while trying to open file.",
     "FILE|LOCKTIMEOUT": "An error occured, file lock timed out.",
     "FILE|LOCKFAILED": "An error occured while trying to lock file.",
-    "FILE|NOPATH": "An error occured, file not found."
+    "FILE|NOPATH": "An error occured, file not found.",
+    "DATA|URL_FETCH_FAILED": "Could not fetch JSON from URL"
 }
