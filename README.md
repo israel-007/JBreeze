@@ -536,13 +536,6 @@ $jb->data('jb_data/users.json')->insert([
     "name": "Charlie",
     "email": "charlie@email.com",
     "age": 27,
-    "gender": {
-        "default": "male",
-        "other": {
-            "format": "t/t",
-            "full": "they/them"
-        }
-    },
     "preferences": {
         "notifications": {
             "email": true,
