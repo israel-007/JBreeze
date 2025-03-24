@@ -145,7 +145,7 @@ The jbreeze library provides various methods to manipulate and query JSON data. 
 $jbreeze->data(string $input)
 
 ```
-Loads JSON data from a file or raw JSON string.
+Loads JSON data from a file, raw JSON string or URL.
 
 ### `select()`
 ```php
@@ -159,6 +159,8 @@ Selects specific keys from the dataset, returning only those fields. `$keys:` An
 ```php
 
 $selectedData = $jbreeze->select(['name', 'age'])->run();
+
+$selectedData = $jbreeze->select(['user.id', 'age'])->run(); // For nested Json tree
 
 ```
 
@@ -174,6 +176,8 @@ Filters the JSON data based on specified conditions. Supports comparison operato
 ```php
 
 $filteredData = $jbreeze->where(['age' => '>25'])->run();
+
+$filteredData = $jbreeze->where(['user.id' => 1])->run(); // For nested Json tree
 
 ```
 
@@ -301,6 +305,91 @@ print_r($result);
 
 ```
 
+### `structuredData()`
+
+Structured Mode (structured = true)
+
+> Schema enforcement is enabled (keys present in the Json data given)
+
+> Extra fields are rejected
+
+> Missing fields are auto-filled with default values
+
+```php
+
+$jb = new jbreeze(['structured' => true]); // Enable structured mode
+
+or
+
+$jb = new jbreeze();
+
+$jb->setStructuredMode(true); // Enable structured mode. Default is true
+
+$jb->data('jb_data/users.json')->insert([
+    'id' => 1,
+    'name' => 'Charlie',
+    'email' => 'charlie@email.com',
+    'status' => 'pending',
+])->run();
+
+```
+
+> Expected JSON Output
+
+```json
+
+[
+    {
+        "id": 1,
+        "name": "Charlie",
+        "email": "charlie@email.com",
+        "gender": "", // Auto-filled as empty because it's missing
+        "status": "pending"
+    }
+]
+
+```
+
+Unstructured Mode (structured = false)
+
+> No schema validation
+
+> All fields are accepted (including unknown ones)
+
+> No default values are applied
+
+```php
+
+$jb->setStructuredMode(false); // Disable structured mode
+
+$jb->data('jb_data/users.json')->insert([
+    'id' => 2,
+    'name' => 'Alice',
+    'email' => 'alice@email.com',
+    'gender' => 'male',
+    'random_field' => 'some value' // This is not in keys, but will be stored
+])->run();
+
+
+```
+
+> Expected JSON Output
+
+```json
+
+[
+    {
+        "id": 2,
+        "name": "Alice",
+        "email": "alice@email.com",
+        "gender": "male",
+        "status": "", // Auto-filled as empty because it's missing
+        "random_field": "some value" // No schema, so it's stored
+    }
+]
+
+```
+
 #
 
 ## Primary Key
@@ -422,6 +511,50 @@ $selectedData = $jbreeze->select(['name', 'address.city'])->run();
 ]
 
 ```
+
+Example: Insert with Dot Notation
+This example demonstrates how dot notation can be used to insert nested fields.
+
+```php
+
+$jb->data('jb_data/users.json')->insert([
+    'id' => 1,
+    'name' => 'Charlie',
+    'email' => 'charlie@email.com',
+    'age' => 27,
+    'preferences.notifications.email' => true,
+    'preferences.notifications.sms' => false
+])->run();
+
+```
+
+> This will return:
+```json
+
+{
+    "id": 1,
+    "name": "Charlie",
+    "email": "charlie@email.com",
+    "age": 27,
+    "gender": {
+        "default": "male",
+        "other": {
+            "format": "t/t",
+            "full": "they/them"
+        }
+    },
+    "preferences": {
+        "notifications": {
+            "email": true,
+            "sms": false
+        }
+    }
+}
+
+```
+
+With this, there is no need to manually structure nested fields and it maintains clean and readable insert syntax.
+
 
 Combining Dot Notation with Other Methods
 Dot notation can be used seamlessly with other methods, such as `order()` and `between()`.
