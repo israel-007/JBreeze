@@ -56,7 +56,7 @@ class Users extends JB_Model
 
 - Defines the schema for users.json
 - Schema hold the keys for quering the json file.
-- iF $tableName is missen, the tbale name becomes the class name, in this case that is `users` i.e $tableName is not complulsory if the class name matches the json file name.
+- If `$tableName` is missen, the table name becomes the class name, in this case that is `users` i.e `$tableName` is not complulsory if the class name matches the json file name.
 - Schema enforcement is always applied, extra keys supplied during insert would throw an error enforcing structured json data.
 
 ## Usage
@@ -223,12 +223,12 @@ Ensures that the value matches the expected data type.
 | `int` | Integer (whole numbers) | `'age' => ['type' => 'int']` |
 | `str` | String (text) | `'name' => ['type' => 'str']` |
 | `bool` | Boolean (`true` or `false`) | `'is_active' => ['type' => 'bool']` |
-| `float` / double | Floating-point number | `'price' => ['type' => 'float']` |
+| `float` / `double` | Floating-point number | `'price' => ['type' => 'float']` |
 | `array` | An array | `'tags' => ['type' => 'array']` |
 | `object` | An object | `'metadata' => ['type' => 'object']` |
 | `mixed`	| Any type of value	| `'created_at' => ['type' => 'mixed']` |
 
-- An error os throws an error if value is not the correct type.
+- An error is throws if value is not the correct type.
 
 
 2. Required Fields (`required`)
