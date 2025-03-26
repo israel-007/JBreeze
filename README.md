@@ -729,7 +729,28 @@ When an error occurs, the response will include:
     "ORDER|NODATA": "No data available to order using the order() method.",
     "ORDER|INVALIDCOLUMN": "The specified column for sorting does not exist in the dataset.",
     "FILE|SAVEERROR": "An error occurred while trying to save the file. Check file permissions or file system issues.",
-    "QUERY|NODATAFOUND": "No data found"
+    "QUERY|NODATAFOUND": "No data found.",
+    "FILE|OPENFAILED": "An error occured while trying to open file.",
+    "FILE|LOCKTIMEOUT": "An error occured, file lock timed out.",
+    "FILE|LOCKFAILED": "An error occured while trying to lock file.",
+    "FILE|NOPATH": "An error occured, file not found.",
+    "SCHEMA|MISSING": "No schema defined for table.",
+    "SCHEMA|UPDATED": "JSON structure adjusted successfully.",
+    "DATA|FILENOTFOUND": "Data file not found for the class used.",
+    "VALIDATION|MISSING_FIELD": "An error occued while inserting new data, required field not found.",
+    "VALIDATION|TYPE_MISMATCH": "An error occued while inserting new data, a data type mismatch was found.",
+    "VALIDATION|INVALID_VALUE": "Value not allowed.",
+    "DATA|URL_FETCH_FAILED": "Could not fetch JSON from URL.",
+    "BACKUP|NOFILE": "JSON file path not set.",
+    "BACKUP|SUCCESS": "Backup created.",
+    "BACKUP|FAILED": "Could not create backup file.",
+    "BACKUP|DELETEFAILED": "Could not delete backup file.",
+    "BACKUP|DELETED": "Backup file successfully deleted.",
+    "RESTORE|NOFILE": "JSON file path not set.",
+    "RESTORE|NOBACKUP": "No backup found.",
+    "RESTORE|FAILED": "Could not restore backup.",
+    "RESTORE|SUCCESS": "Backup restored.",
+    "LOGGING|FAILED": "An error occured while performing log."
 }
 
 ```
