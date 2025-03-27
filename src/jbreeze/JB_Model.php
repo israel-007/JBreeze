@@ -158,43 +158,150 @@ class JB_Model extends jbreeze_init
             $updatedData = [];
             $schemaFields = array_keys(static::$schema); // List of fields in schema
 
-            foreach ($instance->data as $record) {
-                // Rename fields based on provided mapping
+            // Function to remove extra fields from nested arrays
+            function removeExtraFields(&$record, $schemaFields, $parentKey = '')
+            {
+                foreach ($record as $key => &$value) {
+                    $fullKey = $parentKey ? "$parentKey.$key" : $key;
+
+                    // If key does NOT exist in the schema, remove it
+                    if (!keyExistsInSchema($fullKey, $schemaFields)) {
+                        unset($record[$key]);
+                        continue;
+                    }
+
+                    // If value is an array, go deeper
+                    if (is_array($value)) {
+                        removeExtraFields($value, $schemaFields, $fullKey);
+
+                        // If an empty array remains, remove it
+                        if (empty($value)) {
+                            unset($record[$key]);
+                        }
+                    }
+                }
+            }
+
+            // Function to check if a key (including nested) exists in the schema
+            function keyExistsInSchema($key, $schemaFields)
+            {
+                if (in_array($key, $schemaFields)) {
+                    return true; // Match found
+                }
+                foreach ($schemaFields as $schemaKey) {
+                    if (strpos($schemaKey, '.') !== false && str_starts_with($schemaKey, $key . '.')) {
+                        return true; // Key is a valid parent of a nested schema key
+                    }
+                }
+                return false;
+            }
+
+            // Function to rename nested keys using dot notation
+            function renameNestedFields(&$record, $renameFields)
+            {
                 foreach ($renameFields as $oldKey => $newKey) {
-                    if (array_key_exists($oldKey, $record)) {
+                    $oldKeyParts = explode('.', $oldKey);
+                    $newKeyParts = explode('.', $newKey);
+
+                    if (count($oldKeyParts) > 1) { // Handle nested fields
+                        $temp = &$record;
+                        $found = true;
+
+                        // Traverse into the nested array using reference
+                        foreach ($oldKeyParts as $part) {
+                            if (!isset($temp[$part]) || !is_array($temp)) {
+                                $found = false;
+                                break;
+                            }
+                            $temp = &$temp[$part];
+                        }
+
+                        // If key exists, rename it
+                        if ($found) {
+                            // Remove old key
+                            unsetNestedKey($record, $oldKeyParts);
+
+                            // Set new key
+                            setNestedKey($record, $newKeyParts, $temp);
+                        }
+                    } elseif (isset($record[$oldKey])) { // Non-nested field
                         $record[$newKey] = $record[$oldKey];
                         unset($record[$oldKey]);
                     }
                 }
+            }
 
-                // Ensure schema conformity (add missing fields, remove extra fields)
+            // Function to delete a nested key
+            function unsetNestedKey(&$record, $keyParts)
+            {
+                $temp = &$record;
+                while (count($keyParts) > 1) {
+                    $key = array_shift($keyParts);
+                    if (!isset($temp[$key]) || !is_array($temp[$key])) {
+                        return;
+                    }
+                    $temp = &$temp[$key];
+                }
+                unset($temp[array_shift($keyParts)]);
+            }
+
+            // Function to set a nested key
+            function setNestedKey(&$record, $keyParts, $value)
+            {
+                $temp = &$record;
+                foreach ($keyParts as $key) {
+                    if (!isset($temp[$key]) || !is_array($temp[$key])) {
+                        $temp[$key] = [];
+                    }
+                    $temp = &$temp[$key];
+                }
+                $temp = $value;
+            }
+
+            // Process each record individually
+            foreach ($instance->data as $record) {
+                // Apply renaming to this record before modifying structure
+                renameNestedFields($record, $renameFields);
+
+                // Ensure schema conformity (add missing fields)
                 foreach (static::$schema as $field => $rules) {
-
-                    // Ensure rules are in array format
                     if (!is_array($rules)) {
                         $rules = ['type' => $rules];
                     }
 
                     // Determine default value
                     $defaultValue = $rules['default'] ?? $instance->getDefaultEmptyValue($rules['type']);
-
-                    // Handle NOW() replacement
                     if ($defaultValue === 'NOW()') {
                         $defaultValue = date('Y-m-d H:i:s');
                     }
 
-                    // If field is missing, add it with the default value
-                    if (!array_key_exists($field, $record)) {
-                        $record[$field] = $defaultValue;
+                    // Process nested fields using dot notation
+                    if (strpos($field, '.') !== false) {
+                        $keys = explode('.', $field);
+                        $temp = &$record;
+
+                        foreach ($keys as $index => $key) {
+                            if ($index === count($keys) - 1) {
+                                if (!isset($temp[$key]) || is_array($temp[$key])) {
+                                    $temp[$key] = $defaultValue;
+                                }
+                            } else {
+                                if (!isset($temp[$key]) || !is_array($temp[$key])) {
+                                    $temp[$key] = [];
+                                }
+                                $temp = &$temp[$key];
+                            }
+                        }
+                    } else {
+                        // If field is missing, add it with the default value
+                        if (!array_key_exists($field, $record)) {
+                            $record[$field] = $defaultValue;
+                        }
                     }
                 }
 
-                // Remove fields that are not in the schema
-                foreach ($record as $key => $value) {
-                    if (!in_array($key, $schemaFields)) {
-                        unset($record[$key]);
-                    }
-                }
+                // Remove extra fields
+                removeExtraFields($record, $schemaFields);
 
                 // Maintain consistent key order
                 ksort($record);
@@ -207,7 +314,6 @@ class JB_Model extends jbreeze_init
             $instance->data = $updatedData;
             $instance->jb_saveToFile();
 
-            // return "SCHEMA|UPDATED";
             return true;
 
         } catch (Exception $e) {
@@ -215,7 +321,7 @@ class JB_Model extends jbreeze_init
             return (new ErrorHandler($instance->config))->handle($e->getMessage());
         }
     }
-    
+
     /**
      * Creates a backup of the current JSON file before updating the structure.
      * Can be called directly using Users::backupJsonFile().
