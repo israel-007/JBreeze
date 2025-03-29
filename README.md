@@ -50,7 +50,7 @@ The Jbreeze library will be ready to use within your project.
 After installing jbreeze, you can start using it to load, query, and manipulate JSON data.
 
 ## Examples or Useage
-Please visit [Intoduction Section](intro.md) for examples on how to use the library.
+Please visit [Documentation Section](intro.md) for examples on how to use the library.
 
 ## Contributing
 Contributions are welcomed to the jbreeze library! Whether you're fixing bugs, adding new features, improving documentation, or suggesting enhancements, your contributions are valuable.
