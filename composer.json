@@ -9,6 +9,8 @@
     "autoload": {
         "psr-4": {
             "jbreeze\\": "src/jbreeze",
+            "JB_Model\\": "src/jbreeze",
+            "Registry\\": "src/jbreeze",
             "jbreezeExceptions\\": "src/errorhandler"
         }
     },
