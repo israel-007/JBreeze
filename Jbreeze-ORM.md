@@ -195,6 +195,49 @@ print_r(Users::getConfig());
 ```
 - Shows structured mode, return type, and other settings
 
+> Remove extra fields that are not defined in the schema.
+> Add missing fields with their default values (if specified in the schema).
+> Rename fields if needed.
+
+1. Call updateStructure() on your model class:
+```php
+
+Users::updateStructure();
+
+```
+* This will:
+
++ Ensure all records conform to the schema.
+
++ Remove any unwanted fields.
+
++ Add missing fields with default values.
+
+
+2. You can rename fields by passing an associative array:
+```php
+
+Users::updateStructure([
+    'old_field_name' => 'new_field_name',
+    'address.country' => 'address.city', // Works for nested fields too!
+]);
+
+```
+* This will:
+
++ Change `old_field_name` to `new_field_name`.
+
++ Rename `address.country` to `address.city`.
+
+
+* Best Practice
+
++ Always define a valid schema before calling `updateStructure()`.
+
++ Use field renaming carefully to avoid data loss.
+
++ **BONUS:** Backup is automatically created when making changes and you can restore at any time by calling `restoreFromBackup()`.
+
 
 ## Handling Remote JSON Data
 
