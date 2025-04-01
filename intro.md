@@ -62,6 +62,12 @@ The Jbreeze library will be ready to use within your project.
 ## Getting Started
 After installing jbreeze, you can start using it to load, query, and manipulate JSON data. This section will walk you through the basic usage of the library.
 
+> [!TIP]
+> Jbreeze ORM [Latest-Update]:
+> * JBreeze now features fluent query methods, making it easier to write queries effortlessly. Visit the [Jbreeze ORM Documentation](Jbreeze-ORM.md) to learn more.
+
+#
+
 ### Loading Data
 To begin, you need to load JSON data from a file or a raw JSON string using the data() method.
 
