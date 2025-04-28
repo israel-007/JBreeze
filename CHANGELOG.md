@@ -28,3 +28,19 @@ All notable changes to this project will be documented in this file.
 - Error messages has been extended check [readme file](README.md)
 
 -----------------------------------------------------------------------
+
+## Released `['Monday, April 28, 2025']`
+
+### Added
+
+- `->first()` Select's first item from the filltered data
+- `->last()` Select's last item from the filltered data
+- `->distinct([])` This returns unique values for a set columns
+- `->duplicate($id)` Duplicates a record by ID and assigns a new primary key
+- Check the [Jbreeze ORM Readme](Jbreeze-ORM.md) for useage.
+
+### Updated
+
+- NONE
+
+-----------------------------------------------------------------------

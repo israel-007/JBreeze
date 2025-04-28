@@ -75,6 +75,25 @@ class jbreeze extends Jbreeze_init
         $this->jb_instance = $this->jb_instance->jb_init_limit($count);
         return $this;
     }
+    public function distinct(array $columns)
+    {
+        $this->jb_instance = $this->jb_instance->jb_init_distinct($columns);
+        return $this;
+    }
+    public function duplicate($id){
+        $this->jb_instance = $this->jb_instance->jb_init_duplicate($id);
+        return $this;
+    }
+    public function first()
+    {
+        $this->jb_instance = $this->jb_instance->jb_init_first();
+        return $this;
+    }
+    public function last()
+    {
+        $this->jb_instance = $this->jb_instance->jb_init_last();
+        return $this;
+    }
     public function errorslog()
     {
         return $this->jb_instance->jb_init_errorslog();

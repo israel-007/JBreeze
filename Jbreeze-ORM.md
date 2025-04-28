@@ -143,6 +143,54 @@ print_r($result);
 ```
 - Fetches the first 5 users
 
+> Select first user/data
+
+```php
+
+$result = Users::first()->run();
+
+print_r($result);
+
+```
+- Fetched only the first user/data
+
+> Select last user/data
+
+```php
+
+$result = Users::last()->run();
+
+print_r($result);
+
+```
+- Fetched only the last user/data
+
+> Select distinct user's country (or and) age
+
+```php
+
+$result = Users::distinct(['country'])->run();
+
+AND
+
+$result = Users::distinct(['country', 'age'])->run();
+
+print_r($result);
+
+```
+- Fetched distinct column values
+
+> Duplicate a user/data using `ID`
+
+```php
+
+$result = Users::duplicate(1)->run();
+
+print_r($result);
+
+```
+- Duplicated a data using its ID and assigns new primary key
+
 
 ## Advanced Features
 

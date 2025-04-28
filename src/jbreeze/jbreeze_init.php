@@ -13,6 +13,7 @@ class Jbreeze_init
     private $filteredData;  // Holds the filtered dataset
     private $isUpdate = false; // Tracks if update was called
     private $isDelete = false; // Tracks if delete was called
+    private $isSoftDelete = false; // Tracks if delete was called
     private $isInsert = false; // Tracks if insert was called
     private $newValues = [];   // Stores the values for update or insert
     private $primaryKey = null; // Stores the primary key for insert
@@ -508,7 +509,7 @@ class Jbreeze_init
 
             // Check if dataset is empty
             if (empty($this->data)) {
-                
+
                 // If a primary key is specified, ensure it exists in the new values
                 if ($primaryKey && !isset($newValues[$primaryKey])) {
                     $this->newValues[$primaryKey] = 1; // Start primary key from 1
@@ -634,6 +635,159 @@ class Jbreeze_init
     {
         return count($this->filteredData);
     }
+
+    /**
+     * Returns distinct data of filtered results.
+     * 
+     * @param array columns to select
+     * @return self 
+     */
+    public function jb_init_distinct(array $columns)
+    {
+        try {
+            if (empty($this->filteredData)) {
+                throw new Exception("DATA|EMPTY");
+            }
+
+            $uniqueValues = [];
+            $distinctData = [];
+
+            foreach ($this->filteredData as $record) {
+                $keyValues = [];
+
+                foreach ($columns as $column) {
+                    $value = $this->jb_init_getNestedValue($record, $column);
+                    $keyValues[] = $value;
+                }
+
+                // Generate a unique key for this record
+                $uniqueKey = implode('|', $keyValues);
+
+                // If the combination of values is unique, store the record
+                if (!isset($uniqueValues[$uniqueKey])) {
+                    $uniqueValues[$uniqueKey] = true;
+                    $distinctData[] = $record;
+                }
+            }
+
+            // Replace current dataset with the filtered distinct data
+            $this->filteredData = $distinctData;
+
+        } catch (Exception $e) {
+            $this->logException($e->getMessage());
+        }
+
+        return $this;
+
+    }
+
+    /**
+     * Helper function to retrieve nested values using dot notation.
+     */
+    protected function jb_init_getNestedValue(array $record, string $key)
+    {
+        $keys = explode('.', $key);
+        $value = $record;
+
+        foreach ($keys as $part) {
+            if (!is_array($value) || !array_key_exists($part, $value)) {
+                return null; // Key does not exist in the nested structure
+            }
+            $value = $value[$part];
+        }
+
+        return $value;
+    }
+
+    /**
+     * Duplicate a row using it's ID.
+     * 
+     * @param int ID of the data to duplicate
+     * @return self
+     */
+    public function jb_init_duplicate($id)
+    {
+        $errorHandler = new ErrorHandler($this->config);
+
+        try {
+            if (empty($this->filteredData)) {
+                throw new Exception("DATA|EMPTY");
+            }
+
+            // Find the record to duplicate
+            $originalRecord = null;
+            foreach ($this->filteredData as $record) {
+                if (isset($record['id']) && $record['id'] == $id) {
+                    $originalRecord = $record;
+                    break;
+                }
+            }
+
+            if (!$originalRecord) {
+                throw new Exception("DUPLICATE|ID_NOT_FOUND");
+            }
+
+            // Remove primary key (if exists) and generate a new one
+            if (isset($originalRecord['id'])) {
+                $originalRecord['id'] = $this->jb_getNextPrimaryKeyValue('id');
+            }
+
+            // Add duplicated record to data
+            $this->data[] = $originalRecord;
+            $this->filteredData[] = $originalRecord;
+
+            // Save to file
+            $this->jb_saveToFile();
+
+        } catch (Exception $e) {
+            $this->logException($e->getMessage());
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns the first data of filtered results.
+     * 
+     * @return self
+     */
+    public function jb_init_first()
+    {
+        try {
+            if (empty($this->filteredData)) {
+                throw new Exception("DATA|EMPTY");
+            }
+
+            $this->filteredData = [reset($this->filteredData)];
+
+        } catch (Exception $e) {
+            $this->logException($e->getMessage());
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns the last data of filtered results.
+     * 
+     * @return self
+     */
+    public function jb_init_last()
+    {
+        try {
+            if (empty($this->filteredData)) {
+                throw new Exception("DATA|EMPTY");
+            }
+
+            $this->filteredData = [end($this->filteredData)];
+
+        } catch (Exception $e) {
+            $this->logException($e->getMessage());
+        }
+
+        return $this;
+    }
+
 
     /**
      * Retrieves the error log from the ErrorHandler.
