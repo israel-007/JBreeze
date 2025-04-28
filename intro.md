@@ -396,6 +396,78 @@ $jb->data('jb_data/users.json')->insert([
 
 ```
 
+## New Methods
+
+### `first()`
+```php
+
+$jbreeze->first()
+
+```
+Select's first item from the filltered data
+
+> Example:
+```php
+
+$jbreeze->first()->run();
+
+```
+
+### `last()`
+```php
+
+$jbreeze->last()
+
+```
+Select's last item from the filltered data
+
+> Example:
+```php
+
+$jbreeze->last()->run();
+
+```
+
+### `distinct([])`
+```php
+
+$jbreeze->distinct([])
+
+```
+Returns unique values for a set columns
+
+> Example:
+```php
+
+$jbreeze->distinct(['country'])->run();
+
+OR
+
+$jbreeze->distinct(['country', 'age'])->run();
+
+```
+
+### `duplicate()`
+```php
+
+$jbreeze->duplicate()
+
+```
+Duplicates a record by ID and assigns a new primary key
+
+> Example:
+```php
+
+$jbreeze->duplicate(5)->run();
+
+You can also write
+
+$jbreeze->duplicate(5)->last()->run();
+
+// The dupliacated data becomes the last data in the dataset
+
+```
+
 #
 
 ## Primary Key

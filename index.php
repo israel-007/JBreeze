@@ -7,10 +7,9 @@ use jbreeze\jbreeze;
 $jbreeze = new JBreeze();
 
 $result = $jbreeze->data('data.json')
-                    // ->update(['name' => 'janee'])
-                    // ->where(['name' => 'janee'])
-                    // ->delete()
-                    ->insert(['name' => 'Yemi'], 'id')
+                    ->duplicate(5)
+                    ->last()
+                    // ->where(['name' => "Liam O'Connor"])
                     ->run();
 
 echo $result;
