@@ -468,6 +468,66 @@ $jbreeze->duplicate(5)->last()->run();
 
 ```
 
+### `min()`
+```php
+
+$jbreeze->min($column)
+
+```
+Returns the record with the smallest value in the specified column.
+
+> Example:
+```php
+
+$jbreeze->min('age')->run();
+
+```
+
+### `max()`
+```php
+
+$jbreeze->max($column)
+
+```
+Returns the record with the largest value in the specified column.
+
+> Example:
+```php
+
+$jbreeze->max('age')->run();
+
+```
+
+### `avg()`
+```php
+
+$jbreeze->avg($column)
+
+```
+Calculates the average of all numeric values in the specified column.
+
+> Example:
+```php
+
+$jbreeze->avg('price');
+
+```
+
+### `sum()`
+```php
+
+$jbreeze->sum($column)
+
+```
+Calculates the sum of all numeric values in the specified column.
+
+> Example:
+```php
+
+$jbreeze->sum('price');
+
+```
+
 #
 
 ## Primary Key

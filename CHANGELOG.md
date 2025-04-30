@@ -44,3 +44,19 @@ All notable changes to this project will be documented in this file.
 - NONE
 
 -----------------------------------------------------------------------
+
+## Released `['Thursday, May 1, 2025']`
+
+### Added
+
+- `->min()` Returns the record with the smallest value in the specified column.
+- `->max()` Returns the record with the largest value in the specified column.
+- `->avg()` Calculates the average of all numeric values in the specified column.
+- `->sum()` Calculates the sum of all numeric values in the specified column.
+- Check the [Jbreeze ORM Readme](Jbreeze-ORM.md) for useage.
+
+### Updated
+
+- NONE
+
+-----------------------------------------------------------------------
