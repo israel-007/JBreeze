@@ -94,6 +94,27 @@ class jbreeze extends Jbreeze_init
         $this->jb_instance = $this->jb_instance->jb_init_last();
         return $this;
     }
+    public function min($column)
+    {
+        $this->jb_instance = $this->jb_instance->jb_init_min($column);
+        return $this;
+    }
+
+    public function max($column)
+    {
+        $this->jb_instance = $this->jb_instance->jb_init_max($column);
+        return $this;
+    }
+
+    public function avg($column)
+    {
+        return $this->jb_instance->jb_init_avg($column);
+    }
+
+    public function sum($column)
+    {
+        return $this->jb_instance->jb_init_sum($column);
+    }
     public function errorslog()
     {
         return $this->jb_instance->jb_init_errorslog();

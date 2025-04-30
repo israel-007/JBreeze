@@ -13,7 +13,6 @@ class Jbreeze_init
     private $filteredData;  // Holds the filtered dataset
     private $isUpdate = false; // Tracks if update was called
     private $isDelete = false; // Tracks if delete was called
-    private $isSoftDelete = false; // Tracks if delete was called
     private $isInsert = false; // Tracks if insert was called
     private $newValues = [];   // Stores the values for update or insert
     private $primaryKey = null; // Stores the primary key for insert
@@ -788,6 +787,179 @@ class Jbreeze_init
         return $this;
     }
 
+    /**
+     * Returns the record with the smallest value in the specified column.
+     *
+     * @param string $column The column to search for the minimum value.
+     * @return self The instance with filteredData updated to the minimum record.
+     */
+    public function jb_init_min(string $column)
+    {
+        try {
+            if (empty($this->filteredData)) {
+                throw new Exception("DATA|EMPTY");
+            }
+
+            $columnExists = false;
+            $minRecord = null;
+            $minValue = null;
+
+            foreach ($this->filteredData as $record) {
+                $value = $this->jb_init_getNestedValue($record, $column);
+
+                if ($value !== null && $value !== '' && $value !== []) {
+                    $columnExists = true;
+
+                    if ($minValue === null || $value < $minValue) {
+                        $minValue = $value;
+                        $minRecord = $record;
+                    }
+                }
+            }
+
+            if (!$columnExists) {
+                throw new Exception("MIN|COLUMN_NOT_FOUND");
+            }
+
+            if ($minRecord === null) {
+                throw new Exception("DATA|EMPTY");
+            }
+
+            $this->filteredData = [$minRecord];
+
+        } catch (Exception $e) {
+            $this->logException($e->getMessage());
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns the record with the largest value in the specified column.
+     *
+     * @param string $column The column to search for the maximum value.
+     * @return self The instance with filteredData updated to the maximum record.
+     */
+    public function jb_init_max(string $column)
+    {
+        try {
+            if (empty($this->filteredData)) {
+                throw new Exception("DATA|EMPTY");
+            }
+
+            $columnExists = false;
+            $maxRecord = null;
+            $maxValue = null;
+
+            foreach ($this->filteredData as $record) {
+                $value = $this->jb_init_getNestedValue($record, $column);
+
+                if ($value !== null && $value !== '' && $value !== []) {
+                    $columnExists = true;
+
+                    if ($maxValue === null || $value > $maxValue) {
+                        $maxValue = $value;
+                        $maxRecord = $record;
+                    }
+                }
+            }
+
+            if (!$columnExists) {
+                throw new Exception("MAX|COLUMN_NOT_FOUND");
+            }
+
+            if ($maxRecord === null) {
+                throw new Exception("DATA|EMPTY");
+            }
+
+            $this->filteredData = [$maxRecord];
+
+        } catch (Exception $e) {
+            $this->logException($e->getMessage());
+        }
+
+        return $this;
+    }
+
+    /**
+     * Calculates the average of all numeric values in the specified column.
+     *
+     * @param string $column The column to average.
+     * @return float|string The average value, or a handled error string on failure.
+     */
+    public function jb_init_avg(string $column)
+    {
+        try {
+            if (empty($this->filteredData)) {
+                throw new Exception("DATA|EMPTY");
+            }
+
+            $total = 0;
+            $count = 0;
+            $columnExists = false;
+
+            foreach ($this->filteredData as $record) {
+                $value = $this->jb_init_getNestedValue($record, $column);
+
+                if (is_numeric($value)) {
+                    $columnExists = true;
+                    $total += $value;
+                    $count++;
+                }
+            }
+
+            if (!$columnExists) {
+                throw new Exception("AVG|COLUMN_NOT_FOUND");
+            }
+
+            if ($count === 0) {
+                throw new Exception("DATA|EMPTY");
+            }
+
+            return $total / $count;
+
+        } catch (Exception $e) {
+            $this->logException($e->getMessage());
+            return (new ErrorHandler($this->config))->handle($e->getMessage());
+        }
+    }
+
+    /**
+     * Calculates the sum of all numeric values in the specified column.
+     *
+     * @param string $column The column to sum.
+     * @return float|int|string The sum value, or a handled error string on failure.
+     */
+    public function jb_init_sum(string $column)
+    {
+        try {
+            if (empty($this->filteredData)) {
+                throw new Exception("DATA|EMPTY");
+            }
+
+            $total = 0;
+            $columnExists = false;
+
+            foreach ($this->filteredData as $record) {
+                $value = $this->jb_init_getNestedValue($record, $column);
+
+                if (is_numeric($value)) {
+                    $columnExists = true;
+                    $total += $value;
+                }
+            }
+
+            if (!$columnExists) {
+                throw new Exception("SUM|COLUMN_NOT_FOUND");
+            }
+
+            return $total;
+
+        } catch (Exception $e) {
+            $this->logException($e->getMessage());
+            return (new ErrorHandler($this->config))->handle($e->getMessage());
+        }
+    }
 
     /**
      * Retrieves the error log from the ErrorHandler.

@@ -116,6 +116,46 @@ class JB_Model extends jbreeze_init
         return static::getInstance()->jb_init_count();
     }
 
+    public static function first()
+    {
+        return static::getInstance()->jb_init_first();
+    }
+
+    public static function last()
+    {
+        return static::getInstance()->jb_init_last();
+    }
+
+    public static function duplicate($id)
+    {
+        return static::getInstance()->jb_init_duplicate($id);
+    }
+
+    public static function distinct($columns)
+    {
+        return static::getInstance()->jb_init_distinct($columns);
+    }
+
+    public static function min($column)
+    {
+        return static::getInstance()->jb_init_min($column);
+    }
+
+    public static function max($column)
+    {
+        return static::getInstance()->jb_init_max($column);
+    }
+
+    public static function avg($column)
+    {
+        return static::getInstance()->jb_init_avg($column);
+    }
+
+    public static function sum($column)
+    {
+        return static::getInstance()->jb_init_sum($column);
+    }
+
     public static function run(string $returnType = 'json')
     {
         $instance = static::getInstance();

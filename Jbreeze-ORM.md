@@ -191,6 +191,57 @@ print_r($result);
 ```
 - Duplicated a data using its ID and assigns new primary key
 
+> Get the `MIN` value in the specified column
+
+`min()` - Returns the record with the smallest value in the specified column.
+
+```php
+
+$result = Users::min('age')->run();
+
+print_r($result);
+
+```
+- Returns the record where `age` is the smallest value.
+
+> Get the `MAX` value in the specified column
+
+`max()` - Returns the record with the largest value in the specified column.
+
+```php
+
+$result = Users::max('age')->run();
+
+print_r($result);
+
+```
+- Returns the record where `age` is the highest value.
+
+> Get the `AVG` value in the specified column
+
+`avg()` - Calculates the average of all numeric values in the specified column.
+
+```php
+
+$result = Users::avg('price');
+
+print_r($result);
+
+```
+- Calculates the average of `price`.
+
+> Get the `SUM` value in the specified column
+
+`sum()` - Calculates the sum of all numeric values in the specified column.
+
+```php
+
+$result = Users::sum('price');
+
+print_r($result);
+
+```
+- Calculates the sum of `price`.
 
 ## Advanced Features
 
