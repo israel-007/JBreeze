@@ -888,7 +888,11 @@ When an error occurs, the response will include:
     "RESTORE|NOBACKUP": "No backup found.",
     "RESTORE|FAILED": "Could not restore backup.",
     "RESTORE|SUCCESS": "Backup restored.",
-    "LOGGING|FAILED": "An error occured while performing log."
+    "LOGGING|FAILED": "An error occured while performing log.",
+    "MIN|COLUMN_NOT_FOUND": "Column does not exist.",
+    "MAX|COLUMN_NOT_FOUND": "Column does not exist.",
+    "AVG|COLUMN_NOT_FOUND": "Column does not exist or its not numeric.",
+    "SUM|COLUMN_NOT_FOUND": "Column does not exist or its not numeric."
 }
 
 ```
