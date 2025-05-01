@@ -279,7 +279,7 @@ class Jbreeze_init
             // Check if column exists in all records
             foreach ($this->filteredData as $record) {
                 if (!array_key_exists($column, $record)) {
-                    throw new Exception("ORDER|INVALIDCOLUMN: " . $column);
+                    throw new Exception("ORDER|INVALIDCOLUMN - $column is invalid");
                 }
             }
 
@@ -320,7 +320,7 @@ class Jbreeze_init
             // Filter the data to only include records where the key is between the start and end values
             $this->filteredData = array_filter($this->filteredData, function ($item) use ($key, $start, $end) {
                 if (!isset($item[$key])) {
-                    throw new Exception("BETWEEN|INVALIDKEY: " . $key);
+                    throw new Exception("BETWEEN|INVALIDKEY");
                 }
 
                 return $item[$key] >= $start && $item[$key] <= $end;
@@ -723,7 +723,7 @@ class Jbreeze_init
             }
 
             if (!$originalRecord) {
-                throw new Exception("DUPLICATE|ID_NOT_FOUND");
+                throw new Exception("DUPLICATE|ID_NOT_FOUND - A record with id=>$id does not exist.");
             }
 
             // Remove primary key (if exists) and generate a new one
@@ -818,7 +818,7 @@ class Jbreeze_init
             }
 
             if (!$columnExists) {
-                throw new Exception("MIN|COLUMN_NOT_FOUND");
+                throw new Exception("MIN|COLUMN_NOT_FOUND - $column key does not exist in the dataset.");
             }
 
             if ($minRecord === null) {
@@ -865,7 +865,7 @@ class Jbreeze_init
             }
 
             if (!$columnExists) {
-                throw new Exception("MAX|COLUMN_NOT_FOUND");
+                throw new Exception("MAX|COLUMN_NOT_FOUND - $column key does not exist in the dataset.");
             }
 
             if ($maxRecord === null) {
@@ -909,7 +909,7 @@ class Jbreeze_init
             }
 
             if (!$columnExists) {
-                throw new Exception("AVG|COLUMN_NOT_FOUND");
+                throw new Exception("AVG|COLUMN_NOT_FOUND - $column key does not exist in the dataset.");
             }
 
             if ($count === 0) {
@@ -950,7 +950,7 @@ class Jbreeze_init
             }
 
             if (!$columnExists) {
-                throw new Exception("SUM|COLUMN_NOT_FOUND");
+                throw new Exception("SUM|COLUMN_NOT_FOUND - $column key does not exist in the dataset.");
             }
 
             return $total;
@@ -1003,7 +1003,7 @@ class Jbreeze_init
 
             if ($this->isUpdate) {
                 if (empty($this->filteredData)) {
-                    throw new Exception("UPDATE|NOTFOUND");
+                    throw new Exception("UPDATE|NOTFOUND - No matching records were found to be updated.");
                 }
 
                 foreach ($this->data as &$item) {
@@ -1019,13 +1019,17 @@ class Jbreeze_init
 
             if ($this->isDelete) {
                 if (empty($this->filteredData)) {
-                    throw new Exception("DELETE|NOTFOUND");
+                    throw new Exception("DELETE|NOTFOUND - No matching records were found to be deleted.");
                 }
 
                 $originalCount = count($this->data);
-                $this->data = array_filter($this->data, function ($item) {
-                    return !in_array($item, $this->filteredData);
-                });
+                $filtered = [];
+                foreach ($this->data as $item) {
+                    if (!in_array($item, $this->filteredData, true)) {
+                        $filtered[] = $item;
+                    }
+                }
+                $this->data = $filtered;
                 $newCount = count($this->data);
 
                 $this->jb_resetFlags();
@@ -1170,7 +1174,7 @@ class Jbreeze_init
         try {
             // Check if the primary key exists in the dataset keys
             if (!in_array($primaryKey, $existingKeys)) {
-                throw new Exception("KEY|NOTFOUND");
+                throw new Exception("KEY|NOTFOUND - Primary key '$primaryKey' not found in the dataset.");
             }
 
             // Validate that the primary key values are integers

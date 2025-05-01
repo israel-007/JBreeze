@@ -64,12 +64,21 @@ class ErrorHandler
         // Loop through each error and process it
         foreach ($errors as $error) {
             // Map the shortcode to a human-readable message
-            $message = $this->mapErrorMessage($error);
+            // $message = $this->mapErrorMessage($error);
+            // Split error into code and optional custom message
+            if (strpos($error, ' - ') !== false) {
+                [$code, $customMessage] = explode(' - ', $error, 2);
+                $message = trim($customMessage); // Use the custom message
+            } else {
+                $code = $error;
+                $message = $this->mapErrorMessage($code); // Use mapped message
+            }
+
             // Log the error (with shortcode)
-            $this->logError($error, $message);
+            $this->logError($code, $message);
             // Add the shortcode and message to the JSON response
             $jsonResponse[] = [
-                'code' => $error,
+                'code' => $code,
                 'message' => $message
             ];
         }

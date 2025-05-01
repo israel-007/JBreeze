@@ -57,6 +57,7 @@ All notable changes to this project will be documented in this file.
 
 ### Updated
 
-- NONE
+- `delete()` The delete method was'nt saving the data back to the file in a clean and query-able way, this has been fixed `delete()` is now stable.
+- `ErrorHandler` This class now allows the `handle()` method take additional error message along with the error code e.g `throw new Exception("BACKUP|INVALID - Backup file is invalid.");`
 
 -----------------------------------------------------------------------

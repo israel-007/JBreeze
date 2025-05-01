@@ -184,7 +184,7 @@ class JB_Model extends jbreeze_init
             $instance = static::getInstance(); // Model instance
 
             if (empty(static::$schema)) {
-                throw new Exception("SCHEMA|MISSING");
+                throw new Exception("SCHEMA|MISSING - No schema defined for ". static::$tableName ." table.");
             }
 
             // Ensure data is loaded
@@ -441,7 +441,7 @@ class JB_Model extends jbreeze_init
             $decodedData = json_decode($backupData, true);
 
             if (!is_array($decodedData)) {
-                throw new Exception("BACKUP|INVALID");
+                throw new Exception("BACKUP|INVALID - Backup file is invalid.");
             }
 
             // Log retrieval action
@@ -480,7 +480,7 @@ class JB_Model extends jbreeze_init
 
             // Ensure backup file exists before deleting
             if (!file_exists($backupFilePath)) {
-                throw new Exception("BACKUP|NOBACKUP");
+                throw new Exception("BACKUP|NOBACKUP - Backup file '$backupFilePath' does not exist.");
             }
 
             // Attempt to delete the backup file
